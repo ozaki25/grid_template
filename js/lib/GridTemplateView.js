@@ -1,13 +1,13 @@
+var _ = require('underscore');
 var Backbone = require('backbone');
-Backbone._ = require('underscore');
 Backbone.Marionette = require('backbone.marionette');
 
 var GridRowView = Backbone.Marionette.ItemView.extend({
     tagName: 'tr',
-    template: Backbone._.template('<%= values %>'),
+    template: _.template('<%= values %>'),
     templateHelpers: function() {
         return {
-            values: Backbone._(this.model.attributes).map(function(value) {
+            values: _(this.model.attributes).map(function(value) {
                 return '<td>' + value + '</td>'
             })
         }
@@ -17,21 +17,24 @@ var GridRowView = Backbone.Marionette.ItemView.extend({
 var GridTemplateView = Backbone.Marionette.CompositeView.extend({
     childView: GridRowView,
     childViewContainer: '#grid_row_child_container',
-    template: Backbone._.template(
+    template: _.template(
       '<table class="table table-bordered">' +
         '<thead>' +
-          '<tr><%= keys %></tr>' +
+          '<tr><%= tableHeader %></tr>' +
         '</thead>' +
         '<tbody id="grid_row_child_container"></tbody>' +
       '</table>'
     ),
     templateHelpers: function() {
         return {
-            keys: Backbone._(this.collection.models[0].attributes).map(function(_, key) {
-                return '<th>' + key + '</th>'
-            }).join('')
+            tableHeader: _(this.headerNames).map(function(name) {
+                return '<th>' + name + '</th>'
+            }.bind(this)).join('')
         }
     },
+    initialize: function() {
+        this.headerNames = this.collection.models.length ? Object.keys(this.collection.models[0].attributes) : [];
+    }
 });
 
 module.exports = GridTemplateView;
