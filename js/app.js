@@ -58,14 +58,14 @@ var GridRowView = Backbone.Marionette.ItemView.extend({
     template: _.template('<%= values %>'),
     templateHelpers: function() {
         return {
-            values: _(this.colmunsLengthRange).map(function(i) {
-                return '<td>' + this.model.get(this.colmuns[i][0]) + '</td>'
+            values: _(this.columnsLengthRange).map(function(i) {
+                return '<td>' + this.model.get(this.columns[i][0]) + '</td>'
             }.bind(this))
         }
     },
     initialize: function(options) {
-        this.colmuns = options.colmuns;
-        this.colmunsLengthRange = options.colmunsLengthRange;
+        this.columns = options.columns;
+        this.columnsLengthRange = options.columnsLengthRange;
     }
 });
 
@@ -74,8 +74,8 @@ var GridTemplateView = Backbone.Marionette.CompositeView.extend({
     childViewContainer: '#grid_row_child_container',
     childViewOptions: function() {
         return {
-            colmuns: this.colmuns,
-            colmunsLengthRange: this.colmunsLengthRange,
+            columns: this.columns,
+            columnsLengthRange: this.columnsLengthRange,
         }
     },
     template: _.template(
@@ -88,16 +88,15 @@ var GridTemplateView = Backbone.Marionette.CompositeView.extend({
     ),
     templateHelpers: function() {
         return {
-            tableHeader: _(this.colmunsLengthRange).map(function(i) {
-                return '<th>' + this.colmuns[i][1] || this.colmuns[i][0] + '</th>'
+            tableHeader: _(this.columnsLengthRange).map(function(i) {
+                return '<th>' + (this.columns[i][1] || this.columns[i][0]) + '</th>'
             }.bind(this)).join('')
         }
     },
     initialize: function(options) {
-        this.colmuns = options.colmuns;
-        var colmunsLength = this.colmuns ? Object.keys(this.colmuns).length : 0;
-        this.colmunsLengthRange= _.range(1, colmunsLength + 1);
-        //this.colmuns = options.colmuns || this.collection.models.length ? _(this.collection.models[0].attributes).keys() : {};
+        this.columns = options.columns;
+        var columnsLength = this.columns ? Object.keys(this.columns).length : 0;
+        this.columnsLengthRange= _.range(1, columnsLength + 1);
     }
 });
 
@@ -203,8 +202,8 @@ module.exports = Backbone.Marionette.LayoutView.extend({
         this.getRegion('userFormRegion').show(formView);
     },
     renderUserTable: function() {
-        var colmuns = { 1: ['id', 'ID'], 2: ['name', '名前'], 3: ['dept', /*'部署'*/] };
-        var gridView = new GridView({ collection: this.collection, colmuns: colmuns });
+        var columns = { 1: ['id', 'ID'], 2: ['name', '名前'], 3: ['dept', '部署'] };
+        var gridView = new GridView({ collection: this.collection, columns: columns });
         this.getRegion('userTableRegion').show(gridView);
     },
 });
