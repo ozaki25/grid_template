@@ -9,6 +9,7 @@ module.exports = Backbone.Marionette.ItemView.extend({
     ui: {
         inputName: 'input.name',
         inputAge: 'input.age',
+        inputDept: 'input.dept',
         inputs: 'input',
         createBtn: '.create-btn'
     },
@@ -20,7 +21,8 @@ module.exports = Backbone.Marionette.ItemView.extend({
         this.bindBackboneValidation();
         this.model.set({
             name: this.ui.inputName.val().trim(),
-            age: this.ui.inputAge.val().trim()
+            age: this.ui.inputAge.val().trim(),
+            dept: this.ui.inputDept.val().trim(),
         });
         var options = {
             wait: true,

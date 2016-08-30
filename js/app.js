@@ -58,12 +58,11 @@ var GridRowView = Backbone.Marionette.ItemView.extend({
     template: Backbone._.template('<%= attributes %>'),
     templateHelpers: function() {
         return {
-            attributes: Backbone._(this.model.attributes).map(function(attr) { return '<td>' + attr + '</td>' })
+            attributes: Backbone._(this.model.attributes).map(function(attr) {
+                return '<td>' + attr + '</td>'
+            })
         }
     },
-    onRender: function() {
-        console.log(this.model.attributes);
-    }
 });
 
 var GridTemplateView = Backbone.Marionette.CompositeView.extend({
@@ -126,6 +125,7 @@ module.exports = Backbone.Marionette.ItemView.extend({
     ui: {
         inputName: 'input.name',
         inputAge: 'input.age',
+        inputDept: 'input.dept',
         inputs: 'input',
         createBtn: '.create-btn'
     },
@@ -137,7 +137,8 @@ module.exports = Backbone.Marionette.ItemView.extend({
         this.bindBackboneValidation();
         this.model.set({
             name: this.ui.inputName.val().trim(),
-            age: this.ui.inputAge.val().trim()
+            age: this.ui.inputAge.val().trim(),
+            dept: this.ui.inputDept.val().trim(),
         });
         var options = {
             wait: true,

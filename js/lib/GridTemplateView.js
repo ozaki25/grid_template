@@ -7,12 +7,11 @@ var GridRowView = Backbone.Marionette.ItemView.extend({
     template: Backbone._.template('<%= attributes %>'),
     templateHelpers: function() {
         return {
-            attributes: Backbone._(this.model.attributes).map(function(attr) { return '<td>' + attr + '</td>' })
+            attributes: Backbone._(this.model.attributes).map(function(attr) {
+                return '<td>' + attr + '</td>'
+            })
         }
     },
-    onRender: function() {
-        console.log(this.model.attributes);
-    }
 });
 
 var GridTemplateView = Backbone.Marionette.CompositeView.extend({
