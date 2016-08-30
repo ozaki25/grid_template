@@ -34,6 +34,16 @@
     <script id="user_main_view" type="text/template">
       <div class="row">
         <div class="col-md-10 col-md-offset-1">
+          <ul>
+            <li>collectionの他に、表示したいカラムと順番、ヘッダーの表示名を渡した場合</li>
+            <ul>
+              <li>{ (順番): [(カラム名), (ヘッダー表示名)], ・・・・};</li>
+              <li>{ 1: ['id', 'ID'], 2: ['name', '名前'], 3: ['dept', '部署'] };</li>
+            </ul>
+            <li>指定されたカラムのみを表示</li>
+            <li>指定された順番で表示</li>
+            <li>指定されたヘッダーを表示(指定がなければカラム名)</li>
+          </ul>
           <div id="user_form_region"></div>
           <div id="user_table_region"></div>
         </div>

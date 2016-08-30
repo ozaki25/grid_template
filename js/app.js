@@ -50,39 +50,55 @@ app.start();
 
 },{"./collections/Users":1,"./views/HeaderView":5,"./views/users/MainView":7,"backbone":"backbone","backbone.marionette":10,"bootstrap":"bootstrap","jquery":"jquery"}],3:[function(require,module,exports){
 var Backbone = require('backbone');
-Backbone._ = require('underscore');
+var _ = require('underscore');
 Backbone.Marionette = require('backbone.marionette');
 
 var GridRowView = Backbone.Marionette.ItemView.extend({
     tagName: 'tr',
-    template: Backbone._.template('<%= values %>'),
+    template: _.template('<%= values %>'),
     templateHelpers: function() {
         return {
-            values: Backbone._(this.model.attributes).map(function(value) {
-                return '<td>' + value + '</td>'
-            })
+            values: _(this.colmunsLengthRange).map(function(i) {
+                return '<td>' + this.model.get(this.colmuns[i][0]) + '</td>'
+            }.bind(this))
         }
     },
+    initialize: function(options) {
+        this.colmuns = options.colmuns;
+        this.colmunsLengthRange = options.colmunsLengthRange;
+    }
 });
 
 var GridTemplateView = Backbone.Marionette.CompositeView.extend({
     childView: GridRowView,
     childViewContainer: '#grid_row_child_container',
-    template: Backbone._.template(
+    childViewOptions: function() {
+        return {
+            colmuns: this.colmuns,
+            colmunsLengthRange: this.colmunsLengthRange,
+        }
+    },
+    template: _.template(
       '<table class="table table-bordered">' +
         '<thead>' +
-          '<tr><%= keys %></tr>' +
+          '<tr><%= tableHeader %></tr>' +
         '</thead>' +
         '<tbody id="grid_row_child_container"></tbody>' +
       '</table>'
     ),
     templateHelpers: function() {
         return {
-            keys: Backbone._(this.collection.models[0].attributes).map(function(_, key) {
-                return '<th>' + key + '</th>'
-            }).join('')
+            tableHeader: _(this.colmunsLengthRange).map(function(i) {
+                return '<th>' + this.colmuns[i][1] || this.colmuns[i][0] + '</th>'
+            }.bind(this)).join('')
         }
     },
+    initialize: function(options) {
+        this.colmuns = options.colmuns;
+        var colmunsLength = this.colmuns ? Object.keys(this.colmuns).length : 0;
+        this.colmunsLengthRange= _.range(1, colmunsLength + 1);
+        //this.colmuns = options.colmuns || this.collection.models.length ? _(this.collection.models[0].attributes).keys() : {};
+    }
 });
 
 module.exports = GridTemplateView;
@@ -187,7 +203,8 @@ module.exports = Backbone.Marionette.LayoutView.extend({
         this.getRegion('userFormRegion').show(formView);
     },
     renderUserTable: function() {
-        var gridView = new GridView({ collection: this.collection });
+        var colmuns = { 1: ['id', 'ID'], 2: ['name', '名前'], 3: ['dept', /*'部署'*/] };
+        var gridView = new GridView({ collection: this.collection, colmuns: colmuns });
         this.getRegion('userTableRegion').show(gridView);
     },
 });

@@ -1,37 +1,52 @@
 var Backbone = require('backbone');
-Backbone._ = require('underscore');
+var _ = require('underscore');
 Backbone.Marionette = require('backbone.marionette');
 
 var GridRowView = Backbone.Marionette.ItemView.extend({
     tagName: 'tr',
-    template: Backbone._.template('<%= values %>'),
+    template: _.template('<%= values %>'),
     templateHelpers: function() {
         return {
-            values: Backbone._(this.model.attributes).map(function(value) {
-                return '<td>' + value + '</td>'
-            })
+            values: _(this.columnsLengthRange).map(function(i) {
+                return '<td>' + this.model.get(this.columns[i][0]) + '</td>'
+            }.bind(this))
         }
     },
+    initialize: function(options) {
+        this.columns = options.columns;
+        this.columnsLengthRange = options.columnsLengthRange;
+    }
 });
 
 var GridTemplateView = Backbone.Marionette.CompositeView.extend({
     childView: GridRowView,
     childViewContainer: '#grid_row_child_container',
-    template: Backbone._.template(
+    childViewOptions: function() {
+        return {
+            columns: this.columns,
+            columnsLengthRange: this.columnsLengthRange,
+        }
+    },
+    template: _.template(
       '<table class="table table-bordered">' +
         '<thead>' +
-          '<tr><%= keys %></tr>' +
+          '<tr><%= tableHeader %></tr>' +
         '</thead>' +
         '<tbody id="grid_row_child_container"></tbody>' +
       '</table>'
     ),
     templateHelpers: function() {
         return {
-            keys: Backbone._(this.collection.models[0].attributes).map(function(_, key) {
-                return '<th>' + key + '</th>'
-            }).join('')
+            tableHeader: _(this.columnsLengthRange).map(function(i) {
+                return '<th>' + (this.columns[i][1] || this.columns[i][0]) + '</th>'
+            }.bind(this)).join('')
         }
     },
+    initialize: function(options) {
+        this.columns = options.columns;
+        var columnsLength = this.columns ? Object.keys(this.columns).length : 0;
+        this.columnsLengthRange= _.range(1, columnsLength + 1);
+    }
 });
 
 module.exports = GridTemplateView;
