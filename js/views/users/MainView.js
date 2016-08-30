@@ -1,6 +1,7 @@
 var Backbone = require('backbone');
 Backbone.Marionette = require('backbone.marionette');
 var FormView = require('./FormView');
+var GridView = require('../../lib/GridTemplateView');
 
 module.exports = Backbone.Marionette.LayoutView.extend({
     className: 'container',
@@ -18,7 +19,8 @@ module.exports = Backbone.Marionette.LayoutView.extend({
         this.getRegion('userFormRegion').show(formView);
     },
     renderUserTable: function() {
-
+        var gridView = new GridView({ collection: this.collection });
+        this.getRegion('userTableRegion').show(gridView);
     },
 });
 

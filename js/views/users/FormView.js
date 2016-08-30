@@ -4,6 +4,7 @@ Backbone.Validation = require('backbone.validation');
 var User = require('../../models/User');
 
 module.exports = Backbone.Marionette.ItemView.extend({
+    className: 'panel panel-default',
     template: '#user_form_view',
     ui: {
         inputName: 'input.name',

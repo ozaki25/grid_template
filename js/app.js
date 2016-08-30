@@ -8,7 +8,7 @@ module.exports = Backbone.Collection.extend({
     localStorage: new Backbone.LocalStorage('BackboneMarionetteTemplate.Users')
 });
 
-},{"../models/User":3,"backbone":"backbone","backbone.localstorage":8}],2:[function(require,module,exports){
+},{"../models/User":4,"backbone":"backbone","backbone.localstorage":9}],2:[function(require,module,exports){
 jQuery = require('jquery');
 require('bootstrap');
 var Backbone = require('backbone');
@@ -48,7 +48,40 @@ var app = new Backbone.Marionette.Application({
 
 app.start();
 
-},{"./collections/Users":1,"./views/HeaderView":4,"./views/users/MainView":6,"backbone":"backbone","backbone.marionette":9,"bootstrap":"bootstrap","jquery":"jquery"}],3:[function(require,module,exports){
+},{"./collections/Users":1,"./views/HeaderView":5,"./views/users/MainView":7,"backbone":"backbone","backbone.marionette":10,"bootstrap":"bootstrap","jquery":"jquery"}],3:[function(require,module,exports){
+var Backbone = require('backbone');
+Backbone._ = require('underscore');
+Backbone.Marionette = require('backbone.marionette');
+
+var GridRowView = Backbone.Marionette.ItemView.extend({
+    tagName: 'tr',
+    template: Backbone._.template(
+        '<td><%- id %></td>' +
+        '<td><%- name %></td>' +
+        '<td><%- age %></td>'
+    ),
+});
+
+var GridTemplateView = Backbone.Marionette.CompositeView.extend({
+    childView: GridRowView,
+    childViewContainer: '#grid_row_child_container',
+    template: Backbone._.template(
+      '<table class="table table-bordered">' +
+        '<thead>' +
+          '<tr>' +
+            '<th>id</th>' +
+            '<th>Name</th>' +
+            '<th>Age</th>' +
+          '</tr>' +
+        '</thead>' +
+        '<tbody id="grid_row_child_container"></tbody>' +
+      '</table>'
+    ),
+});
+
+module.exports = GridTemplateView;
+
+},{"backbone":"backbone","backbone.marionette":10,"underscore":"underscore"}],4:[function(require,module,exports){
 var Backbone = require('backbone');
 
 module.exports = Backbone.Model.extend({
@@ -67,7 +100,7 @@ module.exports = Backbone.Model.extend({
     }
 });
 
-},{"backbone":"backbone"}],4:[function(require,module,exports){
+},{"backbone":"backbone"}],5:[function(require,module,exports){
 var Backbone = require('backbone');
 Backbone.Marionette = require('backbone.marionette');
 
@@ -76,13 +109,14 @@ module.exports = Backbone.Marionette.ItemView.extend({
 });
 
 
-},{"backbone":"backbone","backbone.marionette":9}],5:[function(require,module,exports){
+},{"backbone":"backbone","backbone.marionette":10}],6:[function(require,module,exports){
 var Backbone = require('backbone');
 Backbone.Marionette = require('backbone.marionette');
 Backbone.Validation = require('backbone.validation');
 var User = require('../../models/User');
 
 module.exports = Backbone.Marionette.ItemView.extend({
+    className: 'panel panel-default',
     template: '#user_form_view',
     ui: {
         inputName: 'input.name',
@@ -102,7 +136,7 @@ module.exports = Backbone.Marionette.ItemView.extend({
         });
         var options = {
             wait: true,
-            success: () => alert('aaaaaaaa')//this.ui.inputs.val('')
+            success: () => this.ui.inputs.val('')
         }
         this.collection.create(this.model, options);
     },
@@ -123,10 +157,11 @@ module.exports = Backbone.Marionette.ItemView.extend({
 });
 
 
-},{"../../models/User":3,"backbone":"backbone","backbone.marionette":9,"backbone.validation":"backbone.validation"}],6:[function(require,module,exports){
+},{"../../models/User":4,"backbone":"backbone","backbone.marionette":10,"backbone.validation":"backbone.validation"}],7:[function(require,module,exports){
 var Backbone = require('backbone');
 Backbone.Marionette = require('backbone.marionette');
 var FormView = require('./FormView');
+var GridView = require('../../lib/GridTemplateView');
 
 module.exports = Backbone.Marionette.LayoutView.extend({
     className: 'container',
@@ -144,12 +179,13 @@ module.exports = Backbone.Marionette.LayoutView.extend({
         this.getRegion('userFormRegion').show(formView);
     },
     renderUserTable: function() {
-
+        var gridView = new GridView({ collection: this.collection });
+        this.getRegion('userTableRegion').show(gridView);
     },
 });
 
 
-},{"./FormView":5,"backbone":"backbone","backbone.marionette":9}],7:[function(require,module,exports){
+},{"../../lib/GridTemplateView":3,"./FormView":6,"backbone":"backbone","backbone.marionette":10}],8:[function(require,module,exports){
 // Backbone.BabySitter
 // -------------------
 // v0.1.11
@@ -341,7 +377,7 @@ module.exports = Backbone.Marionette.LayoutView.extend({
 
 }));
 
-},{"backbone":"backbone","underscore":"underscore"}],8:[function(require,module,exports){
+},{"backbone":"backbone","underscore":"underscore"}],9:[function(require,module,exports){
 /**
  * Backbone localStorage Adapter
  * Version 1.1.16
@@ -601,7 +637,7 @@ Backbone.sync = function(method, model, options) {
 return Backbone.LocalStorage;
 }));
 
-},{"backbone":"backbone"}],9:[function(require,module,exports){
+},{"backbone":"backbone"}],10:[function(require,module,exports){
 // MarionetteJS (Backbone.Marionette)
 // ----------------------------------
 // v2.4.7
@@ -4115,7 +4151,7 @@ return Backbone.LocalStorage;
   return Marionette;
 }));
 
-},{"backbone":"backbone","backbone.babysitter":7,"backbone.wreqr":10,"underscore":"underscore"}],10:[function(require,module,exports){
+},{"backbone":"backbone","backbone.babysitter":8,"backbone.wreqr":11,"underscore":"underscore"}],11:[function(require,module,exports){
 // Backbone.Wreqr (Backbone.Marionette)
 // ----------------------------------
 // v1.3.6
@@ -4552,7 +4588,7 @@ return Backbone.LocalStorage;
 
 }));
 
-},{"backbone":"backbone","underscore":"underscore"}],11:[function(require,module,exports){
+},{"backbone":"backbone","underscore":"underscore"}],12:[function(require,module,exports){
 /* ========================================================================
  * Bootstrap: affix.js v3.3.6
  * http://getbootstrap.com/javascript/#affix
@@ -4716,7 +4752,7 @@ return Backbone.LocalStorage;
 
 }(jQuery);
 
-},{}],12:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 /* ========================================================================
  * Bootstrap: alert.js v3.3.6
  * http://getbootstrap.com/javascript/#alerts
@@ -4812,7 +4848,7 @@ return Backbone.LocalStorage;
 
 }(jQuery);
 
-},{}],13:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 /* ========================================================================
  * Bootstrap: button.js v3.3.6
  * http://getbootstrap.com/javascript/#buttons
@@ -4934,7 +4970,7 @@ return Backbone.LocalStorage;
 
 }(jQuery);
 
-},{}],14:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 /* ========================================================================
  * Bootstrap: carousel.js v3.3.6
  * http://getbootstrap.com/javascript/#carousel
@@ -5173,7 +5209,7 @@ return Backbone.LocalStorage;
 
 }(jQuery);
 
-},{}],15:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 /* ========================================================================
  * Bootstrap: collapse.js v3.3.6
  * http://getbootstrap.com/javascript/#collapse
@@ -5386,7 +5422,7 @@ return Backbone.LocalStorage;
 
 }(jQuery);
 
-},{}],16:[function(require,module,exports){
+},{}],17:[function(require,module,exports){
 /* ========================================================================
  * Bootstrap: dropdown.js v3.3.6
  * http://getbootstrap.com/javascript/#dropdowns
@@ -5553,7 +5589,7 @@ return Backbone.LocalStorage;
 
 }(jQuery);
 
-},{}],17:[function(require,module,exports){
+},{}],18:[function(require,module,exports){
 /* ========================================================================
  * Bootstrap: modal.js v3.3.6
  * http://getbootstrap.com/javascript/#modals
@@ -5892,7 +5928,7 @@ return Backbone.LocalStorage;
 
 }(jQuery);
 
-},{}],18:[function(require,module,exports){
+},{}],19:[function(require,module,exports){
 /* ========================================================================
  * Bootstrap: popover.js v3.3.6
  * http://getbootstrap.com/javascript/#popovers
@@ -6002,7 +6038,7 @@ return Backbone.LocalStorage;
 
 }(jQuery);
 
-},{}],19:[function(require,module,exports){
+},{}],20:[function(require,module,exports){
 /* ========================================================================
  * Bootstrap: scrollspy.js v3.3.6
  * http://getbootstrap.com/javascript/#scrollspy
@@ -6176,7 +6212,7 @@ return Backbone.LocalStorage;
 
 }(jQuery);
 
-},{}],20:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 /* ========================================================================
  * Bootstrap: tab.js v3.3.6
  * http://getbootstrap.com/javascript/#tabs
@@ -6333,7 +6369,7 @@ return Backbone.LocalStorage;
 
 }(jQuery);
 
-},{}],21:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
 /* ========================================================================
  * Bootstrap: tooltip.js v3.3.6
  * http://getbootstrap.com/javascript/#tooltip
@@ -6849,7 +6885,7 @@ return Backbone.LocalStorage;
 
 }(jQuery);
 
-},{}],22:[function(require,module,exports){
+},{}],23:[function(require,module,exports){
 /* ========================================================================
  * Bootstrap: transition.js v3.3.6
  * http://getbootstrap.com/javascript/#transitions
@@ -9459,7 +9495,7 @@ require('../../js/popover.js')
 require('../../js/scrollspy.js')
 require('../../js/tab.js')
 require('../../js/affix.js')
-},{"../../js/affix.js":11,"../../js/alert.js":12,"../../js/button.js":13,"../../js/carousel.js":14,"../../js/collapse.js":15,"../../js/dropdown.js":16,"../../js/modal.js":17,"../../js/popover.js":18,"../../js/scrollspy.js":19,"../../js/tab.js":20,"../../js/tooltip.js":21,"../../js/transition.js":22}],"jquery":[function(require,module,exports){
+},{"../../js/affix.js":12,"../../js/alert.js":13,"../../js/button.js":14,"../../js/carousel.js":15,"../../js/collapse.js":16,"../../js/dropdown.js":17,"../../js/modal.js":18,"../../js/popover.js":19,"../../js/scrollspy.js":20,"../../js/tab.js":21,"../../js/tooltip.js":22,"../../js/transition.js":23}],"jquery":[function(require,module,exports){
 /*!
  * jQuery JavaScript Library v2.2.4
  * http://jquery.com/
