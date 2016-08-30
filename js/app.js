@@ -55,11 +55,11 @@ Backbone.Marionette = require('backbone.marionette');
 
 var GridRowView = Backbone.Marionette.ItemView.extend({
     tagName: 'tr',
-    template: Backbone._.template('<%= attributes %>'),
+    template: Backbone._.template('<%= values %>'),
     templateHelpers: function() {
         return {
-            attributes: Backbone._(this.model.attributes).map(function(attr) {
-                return '<td>' + attr + '</td>'
+            values: Backbone._(this.model.attributes).map(function(value) {
+                return '<td>' + value + '</td>'
             })
         }
     },
@@ -71,14 +71,16 @@ var GridTemplateView = Backbone.Marionette.CompositeView.extend({
     template: Backbone._.template(
       '<table class="table table-bordered">' +
         '<thead>' +
-          '<tr><%= attributeNames %></tr>' +
+          '<tr><%= keys %></tr>' +
         '</thead>' +
         '<tbody id="grid_row_child_container"></tbody>' +
       '</table>'
     ),
     templateHelpers: function() {
         return {
-            attributeNames: Backbone._.chain(this.collection.models[0].attributes).keys().map(function(name) { return '<th>' + name + '</th>' }).value().join('')
+            keys: Backbone._(this.collection.models[0].attributes).map(function(_, key) {
+                return '<th>' + key + '</th>'
+            }).join('')
         }
     },
 });
