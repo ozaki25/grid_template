@@ -4,11 +4,15 @@ Backbone.Marionette = require('backbone.marionette');
 
 var GridRowView = Backbone.Marionette.ItemView.extend({
     tagName: 'tr',
-    template: Backbone._.template(
-        '<td><%- id %></td>' +
-        '<td><%- name %></td>' +
-        '<td><%- age %></td>'
-    ),
+    template: Backbone._.template('<%= attributes %>'),
+    templateHelpers: function() {
+        return {
+            attributes: Backbone._(this.model.attributes).map(function(attr) { return '<td>' + attr + '</td>' })
+        }
+    },
+    onRender: function() {
+        console.log(this.model.attributes);
+    }
 });
 
 var GridTemplateView = Backbone.Marionette.CompositeView.extend({
@@ -17,15 +21,16 @@ var GridTemplateView = Backbone.Marionette.CompositeView.extend({
     template: Backbone._.template(
       '<table class="table table-bordered">' +
         '<thead>' +
-          '<tr>' +
-            '<th>id</th>' +
-            '<th>Name</th>' +
-            '<th>Age</th>' +
-          '</tr>' +
+          '<tr><%= attributeNames %></tr>' +
         '</thead>' +
         '<tbody id="grid_row_child_container"></tbody>' +
       '</table>'
     ),
+    templateHelpers: function() {
+        return {
+            attributeNames: Backbone._.chain(this.collection.models[0].attributes).keys().map(function(name) { return '<th>' + name + '</th>' }).value().join('')
+        }
+    },
 });
 
 module.exports = GridTemplateView;
