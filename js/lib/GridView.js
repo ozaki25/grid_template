@@ -27,13 +27,13 @@ var GridView = Backbone.Marionette.CompositeView.extend({
             columnsLengthRange: this.columnsLengthRange,
         }
     },
+    tagName: 'table',
+    className: 'table table-bordered',
     template: _.template(
-      '<table class="table table-bordered">' +
-        '<thead>' +
-          '<tr><%= tableHeader %></tr>' +
-        '</thead>' +
-        '<tbody id="grid_row_child_container"></tbody>' +
-      '</table>'
+      '<thead>' +
+        '<tr><%= tableHeader %></tr>' +
+      '</thead>' +
+      '<tbody id="grid_row_child_container"></tbody>'
     ),
     templateHelpers: function() {
         return {

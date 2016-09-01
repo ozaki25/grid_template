@@ -49,8 +49,8 @@ var app = new Backbone.Marionette.Application({
 app.start();
 
 },{"./collections/Users":1,"./views/HeaderView":5,"./views/users/MainView":7,"backbone":"backbone","backbone.marionette":10,"bootstrap":"bootstrap","jquery":"jquery"}],3:[function(require,module,exports){
-var Backbone = require('backbone');
 var _ = require('underscore');
+var Backbone = require('backbone');
 Backbone.Marionette = require('backbone.marionette');
 
 var GridRowView = Backbone.Marionette.ItemView.extend({
@@ -69,7 +69,7 @@ var GridRowView = Backbone.Marionette.ItemView.extend({
     },
 });
 
-var GridTemplateView = Backbone.Marionette.CompositeView.extend({
+var GridView = Backbone.Marionette.CompositeView.extend({
     childView: GridRowView,
     childViewContainer: '#grid_row_child_container',
     childViewOptions: function() {
@@ -78,13 +78,13 @@ var GridTemplateView = Backbone.Marionette.CompositeView.extend({
             columnsLengthRange: this.columnsLengthRange,
         }
     },
+    tagName: 'table',
+    className: 'table table-bordered',
     template: _.template(
-      '<table class="table table-bordered">' +
-        '<thead>' +
-          '<tr><%= tableHeader %></tr>' +
-        '</thead>' +
-        '<tbody id="grid_row_child_container"></tbody>' +
-      '</table>'
+      '<thead>' +
+        '<tr><%= tableHeader %></tr>' +
+      '</thead>' +
+      '<tbody id="grid_row_child_container"></tbody>'
     ),
     templateHelpers: function() {
         return {
@@ -113,7 +113,7 @@ var GridTemplateView = Backbone.Marionette.CompositeView.extend({
     }
 });
 
-module.exports = GridTemplateView;
+module.exports = GridView;
 
 },{"backbone":"backbone","backbone.marionette":10,"underscore":"underscore"}],4:[function(require,module,exports){
 var Backbone = require('backbone');
@@ -197,7 +197,7 @@ module.exports = Backbone.Marionette.ItemView.extend({
 var Backbone = require('backbone');
 Backbone.Marionette = require('backbone.marionette');
 var FormView = require('./FormView');
-var GridView = require('../../lib/GridTemplateView');
+var GridView = require('../../lib/GridView');
 
 module.exports = Backbone.Marionette.LayoutView.extend({
     className: 'container',
@@ -222,7 +222,7 @@ module.exports = Backbone.Marionette.LayoutView.extend({
 });
 
 
-},{"../../lib/GridTemplateView":3,"./FormView":6,"backbone":"backbone","backbone.marionette":10}],8:[function(require,module,exports){
+},{"../../lib/GridView":3,"./FormView":6,"backbone":"backbone","backbone.marionette":10}],8:[function(require,module,exports){
 // Backbone.BabySitter
 // -------------------
 // v0.1.11
