@@ -1,5 +1,5 @@
-var Backbone = require('backbone');
 var _ = require('underscore');
+var Backbone = require('backbone');
 Backbone.Marionette = require('backbone.marionette');
 
 var GridRowView = Backbone.Marionette.ItemView.extend({
@@ -18,7 +18,7 @@ var GridRowView = Backbone.Marionette.ItemView.extend({
     },
 });
 
-var GridTemplateView = Backbone.Marionette.CompositeView.extend({
+var GridView = Backbone.Marionette.CompositeView.extend({
     childView: GridRowView,
     childViewContainer: '#grid_row_child_container',
     childViewOptions: function() {
@@ -62,4 +62,4 @@ var GridTemplateView = Backbone.Marionette.CompositeView.extend({
     }
 });
 
-module.exports = GridTemplateView;
+module.exports = GridView;
