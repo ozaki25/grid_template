@@ -30,7 +30,8 @@ module.exports = Backbone.Marionette.LayoutView.extend({
         this.getRegion('userFormRegion').show(formView);
     },
     renderUserTable: function() {
-        var columns = [ ['id', 'ID'], ['dept', '部署'], ['name', '名前']];
+        var buttonView = new ButtonView({ label: 'submit' });
+        var columns = [{ name: 'id', label: 'ID' }, { name: 'dept', label: '部署' }, { name: 'name', label: '名前' }, { name: 'edit_btn', label: '#', view: buttonView }];
         var gridView = new GridView({ collection: this.collection, columns: columns, sort: true });
         this.getRegion('userTableRegion').show(gridView);
     },

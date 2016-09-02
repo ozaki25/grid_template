@@ -1,24 +1,36 @@
 var Backbone = require('backbone');
 var _ = require('underscore');
 Backbone.Marionette = require('backbone.marionette');
+var ButtonView = require('./ButtonView');
 
-var GridRowView = Backbone.Marionette.ItemView.extend({
+var GridRowView = Backbone.Marionette.LayoutView.extend({
     tagName: 'tr',
     template: _.template('<%= values %>'),
     templateHelpers: function() {
         return {
             values: _(this.columns).map(function(col) {
-                var propName = 0;
-                return '<td>' + this.model.get(col[propName]) + '</td>'
+                var value = col.view instanceof Backbone.View ? '' : this.model.get(col.name);
+                return '<td id="table_data_' + this.model.id + '_' + col.name + '">' + value + '</td>';
             }.bind(this))
         }
     },
     initialize: function(options) {
         this.columns = options.columns;
     },
+    onRender: function() {
+        _(this.columns).each(function(col) {
+            if(col.view instanceof Backbone.View) {
+                this.addRegion(this.model.id + col.name, '#table_data_' + this.model.id + '_' + col.name);
+                this.getRegion(this.model.id + col.name).show(new ButtonView({ label: 'submit' }));
+                //this.getRegion(this.model.id + col.name).show(col.view);
+            }
+        }.bind(this));
+    }
 });
 
 var GridView = Backbone.Marionette.CompositeView.extend({
+    tagName: 'table',
+    className: 'table table-bordered',
     childView: GridRowView,
     childViewContainer: '#grid_child_container',
     childViewOptions: function() {
@@ -27,19 +39,15 @@ var GridView = Backbone.Marionette.CompositeView.extend({
         }
     },
     template: _.template(
-      '<table class="table table-bordered">' +
-        '<thead>' +
-          '<tr><%= tableHeader %></tr>' +
-        '</thead>' +
-        '<tbody id="grid_child_container"></tbody>' +
-      '</table>'
+      '<thead>' +
+        '<tr><%= tableHeader %></tr>' +
+      '</thead>' +
+      '<tbody id="grid_child_container"></tbody>'
     ),
     templateHelpers: function() {
         return {
             tableHeader: _(this.columns).map(function(col) {
-                var propName = 0;
-                var header = 1;
-                return '<th class="table-header" name="' + col[propName] + '">' + (col[header] || col[propName]) + '</th>'
+                return '<th class="table-header" name="' + col.name + '">' + (col.label || col.name) + '</th>'
             }).join('')
         }
     },
@@ -48,7 +56,7 @@ var GridView = Backbone.Marionette.CompositeView.extend({
         this.columns = options.columns;
     },
     ui: {
-        tableHeader: 'th.table-header',
+         tableHeader: 'th.table-header',
     },
     events: {
         'click @ui.tableHeader': 'onClickTableHeader',
