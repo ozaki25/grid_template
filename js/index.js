@@ -6,6 +6,8 @@ var Users = require('./collections/Users');
 var HeaderView = require('./views/HeaderView');
 var MainView = require('./views/users/MainView');
 
+var users = new Users();
+
 var appRouter = Backbone.Marionette.AppRouter.extend({
     appRoutes: {
         "": "users",
@@ -16,7 +18,6 @@ var appRouter = Backbone.Marionette.AppRouter.extend({
     },
     controller: {
         users: function() {
-            var users = new Users();
             users.fetch();
             var mainView = new MainView({ collection: users });
             app.getRegion('main').show(mainView);

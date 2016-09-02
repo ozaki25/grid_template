@@ -1,7 +1,7 @@
 var Backbone = require('backbone');
 Backbone.Marionette = require('backbone.marionette');
 var FormView = require('./FormView');
-var GridView = require('../../lib/GridTemplateView');
+var GridView = require('../../lib/GridView');
 
 module.exports = Backbone.Marionette.LayoutView.extend({
     className: 'container',

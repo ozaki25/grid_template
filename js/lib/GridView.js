@@ -18,9 +18,9 @@ var GridRowView = Backbone.Marionette.ItemView.extend({
     },
 });
 
-var GridTemplateView = Backbone.Marionette.CompositeView.extend({
+var GridView = Backbone.Marionette.CompositeView.extend({
     childView: GridRowView,
-    childViewContainer: '#grid_row_child_container',
+    childViewContainer: '#grid_child_container',
     childViewOptions: function() {
         return {
             columns: this.columns,
@@ -32,7 +32,7 @@ var GridTemplateView = Backbone.Marionette.CompositeView.extend({
         '<thead>' +
           '<tr><%= tableHeader %></tr>' +
         '</thead>' +
-        '<tbody id="grid_row_child_container"></tbody>' +
+        '<tbody id="grid_child_container"></tbody>' +
       '</table>'
     ),
     templateHelpers: function() {
@@ -62,4 +62,4 @@ var GridTemplateView = Backbone.Marionette.CompositeView.extend({
     }
 });
 
-module.exports = GridTemplateView;
+module.exports = GridView;

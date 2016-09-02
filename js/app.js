@@ -17,6 +17,8 @@ var Users = require('./collections/Users');
 var HeaderView = require('./views/HeaderView');
 var MainView = require('./views/users/MainView');
 
+var users = new Users();
+
 var appRouter = Backbone.Marionette.AppRouter.extend({
     appRoutes: {
         "": "users",
@@ -27,7 +29,6 @@ var appRouter = Backbone.Marionette.AppRouter.extend({
     },
     controller: {
         users: function() {
-            var users = new Users();
             users.fetch();
             var mainView = new MainView({ collection: users });
             app.getRegion('main').show(mainView);
@@ -69,9 +70,9 @@ var GridRowView = Backbone.Marionette.ItemView.extend({
     },
 });
 
-var GridTemplateView = Backbone.Marionette.CompositeView.extend({
+var GridView = Backbone.Marionette.CompositeView.extend({
     childView: GridRowView,
-    childViewContainer: '#grid_row_child_container',
+    childViewContainer: '#grid_child_container',
     childViewOptions: function() {
         return {
             columns: this.columns,
@@ -83,7 +84,7 @@ var GridTemplateView = Backbone.Marionette.CompositeView.extend({
         '<thead>' +
           '<tr><%= tableHeader %></tr>' +
         '</thead>' +
-        '<tbody id="grid_row_child_container"></tbody>' +
+        '<tbody id="grid_child_container"></tbody>' +
       '</table>'
     ),
     templateHelpers: function() {
@@ -113,7 +114,7 @@ var GridTemplateView = Backbone.Marionette.CompositeView.extend({
     }
 });
 
-module.exports = GridTemplateView;
+module.exports = GridView;
 
 },{"backbone":"backbone","backbone.marionette":10,"underscore":"underscore"}],4:[function(require,module,exports){
 var Backbone = require('backbone');
@@ -197,7 +198,7 @@ module.exports = Backbone.Marionette.ItemView.extend({
 var Backbone = require('backbone');
 Backbone.Marionette = require('backbone.marionette');
 var FormView = require('./FormView');
-var GridView = require('../../lib/GridTemplateView');
+var GridView = require('../../lib/GridView');
 
 module.exports = Backbone.Marionette.LayoutView.extend({
     className: 'container',
@@ -222,7 +223,7 @@ module.exports = Backbone.Marionette.LayoutView.extend({
 });
 
 
-},{"../../lib/GridTemplateView":3,"./FormView":6,"backbone":"backbone","backbone.marionette":10}],8:[function(require,module,exports){
+},{"../../lib/GridView":3,"./FormView":6,"backbone":"backbone","backbone.marionette":10}],8:[function(require,module,exports){
 // Backbone.BabySitter
 // -------------------
 // v0.1.11
