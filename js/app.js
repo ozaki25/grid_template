@@ -59,14 +59,14 @@ var GridRowView = Backbone.Marionette.ItemView.extend({
     template: _.template('<%= values %>'),
     templateHelpers: function() {
         return {
-            values: _(this.columnsLengthRange).map(function(i) {
-                return '<td>' + this.model.get(this.columns[i][0]) + '</td>'
+            values: _(this.columns).map(function(col) {
+                var propName = 0;
+                return '<td>' + this.model.get(col[propName]) + '</td>'
             }.bind(this))
         }
     },
     initialize: function(options) {
         this.columns = options.columns;
-        this.columnsLengthRange = options.columnsLengthRange;
     },
 });
 
@@ -76,7 +76,6 @@ var GridView = Backbone.Marionette.CompositeView.extend({
     childViewOptions: function() {
         return {
             columns: this.columns,
-            columnsLengthRange: this.columnsLengthRange,
         }
     },
     template: _.template(
@@ -89,16 +88,16 @@ var GridView = Backbone.Marionette.CompositeView.extend({
     ),
     templateHelpers: function() {
         return {
-            tableHeader: _(this.columnsLengthRange).map(function(i) {
-                return '<th class="table-header" name="' + this.columns[i][0] + '">' + (this.columns[i][1] || this.columns[i][0]) + '</th>'
-            }.bind(this)).join('')
+            tableHeader: _(this.columns).map(function(col) {
+                var propName = 0;
+                var header = 1;
+                return '<th class="table-header" name="' + col[propName] + '">' + (col[header] || col[propName]) + '</th>'
+            }).join('')
         }
     },
     initialize: function(options) {
-        this.sort = options.sort;
+        this.sortable = options.sort;
         this.columns = options.columns;
-        var columnsLength = this.columns ? Object.keys(this.columns).length : 0;
-        this.columnsLengthRange= _.range(1, columnsLength + 1);
     },
     ui: {
         tableHeader: 'th.table-header',
@@ -216,7 +215,7 @@ module.exports = Backbone.Marionette.LayoutView.extend({
         this.getRegion('userFormRegion').show(formView);
     },
     renderUserTable: function() {
-        var columns = { 1: ['id', 'ID'], 2: ['name', '名前'], 3: ['dept', '部署'] };
+        var columns = [['id', 'ID'], ['dept', '部署'], ['name', '名前']];
         var gridView = new GridView({ collection: this.collection, columns: columns, sort: true });
         this.getRegion('userTableRegion').show(gridView);
     },
