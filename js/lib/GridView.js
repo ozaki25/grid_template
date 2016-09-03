@@ -1,5 +1,5 @@
-var Backbone = require('backbone');
 var _ = require('underscore');
+var Backbone = require('backbone');
 Backbone.Marionette = require('backbone.marionette');
 var ButtonView = require('./ButtonView');
 
@@ -9,20 +9,23 @@ var GridRowView = Backbone.Marionette.LayoutView.extend({
     templateHelpers: function() {
         return {
             values: _(this.columns).map(function(col) {
-                var value = col.view instanceof Backbone.View ? '' : this.model.get(col.name);
-                return '<td id="table_data_' + this.model.id + '_' + col.name + '">' + value + '</td>';
+                var value = col.view ? '' : this.model.get(col.name);
+                var id = 'table_data_' + this.model.id + '_' + (col.view ? col.view.cid : col.name);
+                return '<td id="' + id + '">' + value + '</td>';
             }.bind(this))
         }
     },
     initialize: function(options) {
         this.columns = options.columns;
+        _(this.columns).map(function(col) {
+            if(col.child) col.view = new col.child.view(col.child.options);
+        });
     },
     onRender: function() {
         _(this.columns).each(function(col) {
-            if(col.view instanceof Backbone.View) {
-                this.addRegion(this.model.id + col.name, '#table_data_' + this.model.id + '_' + col.name);
-                this.getRegion(this.model.id + col.name).show(new ButtonView({ label: 'submit' }));
-                //this.getRegion(this.model.id + col.name).show(col.view);
+            if(col.view) {
+                this.addRegion(this.model.id + col.view.cid, '#table_data_' + this.model.id + '_' + col.view.cid);
+                this.getRegion(this.model.id + col.view.cid).show(col.view);
             }
         }.bind(this));
     }

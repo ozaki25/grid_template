@@ -78,8 +78,8 @@ var ButtonView = Backbone.Marionette.ItemView.extend({
 module.exports = ButtonView;
 
 },{"backbone":"backbone","backbone.marionette":11,"underscore":"underscore"}],4:[function(require,module,exports){
-var Backbone = require('backbone');
 var _ = require('underscore');
+var Backbone = require('backbone');
 Backbone.Marionette = require('backbone.marionette');
 var ButtonView = require('./ButtonView');
 
@@ -89,20 +89,23 @@ var GridRowView = Backbone.Marionette.LayoutView.extend({
     templateHelpers: function() {
         return {
             values: _(this.columns).map(function(col) {
-                var value = col.view instanceof Backbone.View ? '' : this.model.get(col.name);
-                return '<td id="table_data_' + this.model.id + '_' + col.name + '">' + value + '</td>';
+                var value = col.view ? '' : this.model.get(col.name);
+                var id = 'table_data_' + this.model.id + '_' + (col.view ? col.view.cid : col.name);
+                return '<td id="' + id + '">' + value + '</td>';
             }.bind(this))
         }
     },
     initialize: function(options) {
         this.columns = options.columns;
+        _(this.columns).map(function(col) {
+            if(col.child) col.view = new col.child.view(col.child.options);
+        });
     },
     onRender: function() {
         _(this.columns).each(function(col) {
-            if(col.view instanceof Backbone.View) {
-                this.addRegion(this.model.id + col.name, '#table_data_' + this.model.id + '_' + col.name);
-                this.getRegion(this.model.id + col.name).show(new ButtonView({ label: 'submit' }));
-                //this.getRegion(this.model.id + col.name).show(col.view);
+            if(col.view) {
+                this.addRegion(this.model.id + col.view.cid, '#table_data_' + this.model.id + '_' + col.view.cid);
+                this.getRegion(this.model.id + col.view.cid).show(col.view);
             }
         }.bind(this));
     }
@@ -262,8 +265,14 @@ module.exports = Backbone.Marionette.LayoutView.extend({
         this.getRegion('userFormRegion').show(formView);
     },
     renderUserTable: function() {
-        var buttonView = new ButtonView({ label: 'submit' });
-        var columns = [{ name: 'id', label: 'ID' }, { name: 'dept', label: '部署' }, { name: 'name', label: '名前' }, { name: 'edit_btn', label: '#', view: buttonView }];
+        var buttonView = new ButtonView();
+        var columns = [
+            { label: 'ID',   name: 'id' },
+            { label: '部署', name: 'dept' },
+            { label: '名前', name: 'name' },
+            { label: '#',    child: { view: ButtonView, options: { label: 'Edit' } } },
+            { label: '#',    child: { view: ButtonView, options: { label: 'Destroy' } } },
+        ];
         var gridView = new GridView({ collection: this.collection, columns: columns, sort: true });
         this.getRegion('userTableRegion').show(gridView);
     },
