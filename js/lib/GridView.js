@@ -20,6 +20,8 @@ var GridRowView = Backbone.Marionette.LayoutView.extend({
         _(this.columns).map(function(col) {
             if(col.child) col.view = new col.child.view(col.child.options);
         });
+        this.eventNames = options.eventNames;
+        this.addChildEvents();
     },
     onRender: function() {
         _(this.columns).each(function(col) {
@@ -28,7 +30,14 @@ var GridRowView = Backbone.Marionette.LayoutView.extend({
                 this.getRegion(this.model.id + col.view.cid).show(col.view);
             }
         }.bind(this));
-    }
+    },
+    addChildEvents: function() {
+        _(this.eventNames).each(function(eventName) {
+            var event = {};
+            event[eventName] = function() { this.triggerMethod(eventName); };
+            this.childEvents = Backbone.$.extend({}, this.childEvents, event);
+        }.bind(this));
+    },
 });
 
 var GridView = Backbone.Marionette.CompositeView.extend({
@@ -39,6 +48,7 @@ var GridView = Backbone.Marionette.CompositeView.extend({
     childViewOptions: function() {
         return {
             columns: this.columns,
+            eventNames: this.eventNames,
         }
     },
     template: _.template(
@@ -57,6 +67,7 @@ var GridView = Backbone.Marionette.CompositeView.extend({
     initialize: function(options) {
         this.sortable = options.sort;
         this.columns = options.columns;
+        this.eventNames = options.eventNames
     },
     ui: {
          tableHeader: 'th.table-header',

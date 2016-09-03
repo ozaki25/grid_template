@@ -100,6 +100,8 @@ var GridRowView = Backbone.Marionette.LayoutView.extend({
         _(this.columns).map(function(col) {
             if(col.child) col.view = new col.child.view(col.child.options);
         });
+        this.eventNames = options.eventNames;
+        this.addChildEvents();
     },
     onRender: function() {
         _(this.columns).each(function(col) {
@@ -108,7 +110,14 @@ var GridRowView = Backbone.Marionette.LayoutView.extend({
                 this.getRegion(this.model.id + col.view.cid).show(col.view);
             }
         }.bind(this));
-    }
+    },
+    addChildEvents: function() {
+        _(this.eventNames).each(function(eventName) {
+            var event = {};
+            event[eventName] = function() { this.triggerMethod(eventName); };
+            this.childEvents = Backbone.$.extend({}, this.childEvents, event);
+        }.bind(this));
+    },
 });
 
 var GridView = Backbone.Marionette.CompositeView.extend({
@@ -119,6 +128,7 @@ var GridView = Backbone.Marionette.CompositeView.extend({
     childViewOptions: function() {
         return {
             columns: this.columns,
+            eventNames: this.eventNames,
         }
     },
     template: _.template(
@@ -137,6 +147,7 @@ var GridView = Backbone.Marionette.CompositeView.extend({
     initialize: function(options) {
         this.sortable = options.sort;
         this.columns = options.columns;
+        this.eventNames = options.eventNames
     },
     ui: {
          tableHeader: 'th.table-header',
@@ -252,6 +263,7 @@ module.exports = Backbone.Marionette.LayoutView.extend({
     childEvents: {
         'click:button': 'onClickButton',
         'click:edit': 'onClickEditButton',
+        'click:destroy': 'onClickDestroyButton',
     },
     onRender: function() {
         this.renderUserForm();
@@ -267,13 +279,14 @@ module.exports = Backbone.Marionette.LayoutView.extend({
     renderUserTable: function() {
         var buttonView = new ButtonView();
         var columns = [
-            { label: 'ID',   name: 'id' },
+            { label: 'ID', name: 'id' },
             { label: '部署', name: 'dept' },
             { label: '名前', name: 'name' },
-            { label: '#',    child: { view: ButtonView, options: { label: 'Edit' } } },
-            { label: '#',    child: { view: ButtonView, options: { label: 'Destroy' } } },
+            { label: '#', child: { view: ButtonView, options: { label: 'Edit', clickEventName: 'click:edit' } } },
+            { label: '#', child: { view: ButtonView, options: { label: 'Destroy', clickEventName: 'click:destroy' } } },
         ];
-        var gridView = new GridView({ collection: this.collection, columns: columns, sort: true });
+        var eventNames = ['click:edit', 'click:destroy'];
+        var gridView = new GridView({ collection: this.collection, columns: columns, sort: true, eventNames: eventNames });
         this.getRegion('userTableRegion').show(gridView);
     },
     renderButton1: function() {
@@ -286,11 +299,16 @@ module.exports = Backbone.Marionette.LayoutView.extend({
     },
     renderButton3: function() {
     },
-    onClickButton: function() {
+    onClickButton: function(view) {
         alert('click button!');
     },
-    onClickEditButton: function() {
-        alert('click edit button!!');
+    onClickEditButton: function(view) {
+        alert('click edit button!');
+        console.log('edit : ' + JSON.stringify(view.model.attributes));
+    },
+    onClickDestroyButton: function(view) {
+        console.log('destroy : ' + JSON.stringify(view.model.attributes));
+        if(confirm('are you ok?')) view.model.destroy();
     },
 });
 
