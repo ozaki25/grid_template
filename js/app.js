@@ -56,9 +56,10 @@ Backbone.Marionette = require('backbone.marionette');
 var ButtonView = Backbone.Marionette.ItemView.extend({
     tagName: 'button',
     attributes: function() {
-        return {
-            class: this.options.classNames || 'btn btn-default'
-        }
+        return Backbone.$.extend(this.options._attrs, {
+            id: this.options._id,
+            class: this.options._className || 'btn btn-default',
+        });
     },
     template: _.template('<%= label %>'),
     templateHelpers: function() {
@@ -283,7 +284,7 @@ module.exports = Backbone.Marionette.LayoutView.extend({
             { label: 'ID', name: 'id' },
             { label: '部署', name: 'dept' },
             { label: '名前', name: 'name' },
-            { label: '#', child: { view: ButtonView, options: { label: 'Edit', clickEventName: 'click:edit', classNames: 'btn btn-xs btn-primary' } } },
+            { label: '#', child: { view: ButtonView, options: { label: 'Edit', clickEventName: 'click:edit', _className: 'btn btn-xs btn-primary' } } },
             { label: '#', child: { view: ButtonView, options: { label: 'Destroy', clickEventName: 'click:destroy' } } },
         ];
         var eventNames = ['click:edit', 'click:destroy'];
@@ -291,11 +292,17 @@ module.exports = Backbone.Marionette.LayoutView.extend({
         this.getRegion('userTableRegion').show(gridView);
     },
     renderButton1: function() {
-        var buttonView = new ButtonView({ label: 'submit' });
+        var buttonView = new ButtonView({
+            label: 'submit',
+            clickEventName: 'click:edit',
+            _id: 'edit_btn',
+            _className: 'btn btn-xs btn-success',
+            _attrs: { name: 'editBtn', 'data-target': '#button' }
+        });
         this.getRegion('button1Region').show(buttonView);
     },
     renderButton2: function() {
-        var buttonView = new ButtonView({ label: 'submit', clickEventName: 'click:edit' });
+        var buttonView = new ButtonView({ label: 'submit' });
         this.getRegion('button2Region').show(buttonView);
     },
     onClickButton: function(view) {
