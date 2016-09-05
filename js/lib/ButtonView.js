@@ -4,7 +4,11 @@ Backbone.Marionette = require('backbone.marionette');
 
 var ButtonView = Backbone.Marionette.ItemView.extend({
     tagName: 'button',
-    className: 'btn btn-default',
+    attributes: function() {
+        return {
+            class: this.options.classNames || 'btn btn-default'
+        }
+    },
     template: _.template('<%= label %>'),
     templateHelpers: function() {
         return {

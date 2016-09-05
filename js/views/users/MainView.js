@@ -12,31 +12,28 @@ module.exports = Backbone.Marionette.LayoutView.extend({
         userTableRegion: '#user_table_region',
         button1Region: '#button_1_region',
         button2Region: '#button_2_region',
-        button3Region: '#button_3_region',
     },
     childEvents: {
         'click:button': 'onClickButton',
         'click:edit': 'onClickEditButton',
         'click:destroy': 'onClickDestroyButton',
     },
-    onRender: function() {
+    onBeforeShow: function() {
         this.renderUserForm();
         this.renderUserTable();
         this.renderButton1();
         this.renderButton2();
-        this.renderButton3();
     },
     renderUserForm: function() {
         var formView = new FormView({ collection: this.collection });
         this.getRegion('userFormRegion').show(formView);
     },
     renderUserTable: function() {
-        var buttonView = new ButtonView();
         var columns = [
             { label: 'ID', name: 'id' },
             { label: '部署', name: 'dept' },
             { label: '名前', name: 'name' },
-            { label: '#', child: { view: ButtonView, options: { label: 'Edit', clickEventName: 'click:edit' } } },
+            { label: '#', child: { view: ButtonView, options: { label: 'Edit', clickEventName: 'click:edit', classNames: 'btn btn-xs btn-primary' } } },
             { label: '#', child: { view: ButtonView, options: { label: 'Destroy', clickEventName: 'click:destroy' } } },
         ];
         var eventNames = ['click:edit', 'click:destroy'];
@@ -51,8 +48,6 @@ module.exports = Backbone.Marionette.LayoutView.extend({
         var buttonView = new ButtonView({ label: 'submit', clickEventName: 'click:edit' });
         this.getRegion('button2Region').show(buttonView);
     },
-    renderButton3: function() {
-    },
     onClickButton: function(view) {
         alert('click button!');
     },
@@ -62,6 +57,6 @@ module.exports = Backbone.Marionette.LayoutView.extend({
     },
     onClickDestroyButton: function(view) {
         console.log('destroy : ' + JSON.stringify(view.model.attributes));
-        if(confirm('are you ok?')) view.model.destroy();
+        if(confirm('Are you ok?')) view.model.destroy();
     },
 });
