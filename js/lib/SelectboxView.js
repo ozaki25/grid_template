@@ -5,7 +5,8 @@ Backbone.Marionette = require('backbone.marionette');
 var SelectboxOptionView = Backbone.Marionette.ItemView.extend({
     tagName: 'option',
     attributes: function() {
-        return Backbone.$.extend(this.options.attrs, {
+        var selected = this.options.selected == this.model.id ? { selected: 'selected' } : {};
+        return Backbone.$.extend(this.options.attrs, selected, {
             value: this.model.get(this.options.value),
             'data-model-id': this.model.id,
         });
@@ -37,12 +38,14 @@ var SelectboxView = Backbone.Marionette.CollectionView.extend({
             label: this.label,
             value: this.value,
             attrs: this.optionAttrs,
+            selected: this.selected,
         }
     },
     initialize: function(options) {
         this.label = options.label;
         this.value = options.value;
         this.optionAttrs = options.optionAttrs;
+        this.selected = options.selected;
         this.changeEventName = options.changeEventName || 'change:selectbox';
     },
     events: {
