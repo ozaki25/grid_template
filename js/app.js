@@ -173,6 +173,22 @@ var GridView = Backbone.Marionette.CompositeView.extend({
 module.exports = GridView;
 
 },{"./ButtonView":3,"backbone":"backbone","backbone.marionette":12,"underscore":"underscore"}],5:[function(require,module,exports){
+/*
+var SelectboxView = require('./SelectboxView')
+var selectboxView = new SelectboxView({
+    collection: this.collection,                  // [必須]コレクション
+    label: 'name',                                // [必須]選択肢に表示するプロパティ
+    value: 'id',                                  // [必須]valueにセットするプロパティ
+    changeEventName: 'change:user',               // 変更時に発生するイベント名 [デフォルト]change:selectbox
+    _id: 'select_user',                           // selectタグのid
+    _className: 'select-user',                    // selectタグのclass [デフォルト]form-control
+    attrs: { name: 'selectUser' },                // selectタグの属性
+    optionAttrs: { class: 'select-option' },      // optionタグの属性
+    selected: this.model.id,                      // デフォルトで選択済みにする項目のid
+})
+this.getRegions('selectboxRegion').show(selectboxView);
+*/
+
 var _ = require('underscore');
 var Backbone = require('backbone');
 Backbone.Marionette = require('backbone.marionette');
@@ -196,8 +212,6 @@ var SelectboxOptionView = Backbone.Marionette.ItemView.extend({
         this.label = options.label;
     },
 });
-
-
 
 var SelectboxView = Backbone.Marionette.CollectionView.extend({
     tagName: 'select',
@@ -389,7 +403,7 @@ module.exports = Backbone.Marionette.LayoutView.extend({
             _id: 'select_user',
             _className: 'form-control select-user',
             attrs: { name: 'selectUser', 'data-target': '#button' },
-            optionAttrs: { _className: 'select-option' },
+            optionAttrs: { class: 'select-option' },
             selected: this.collection.at(this.collection.length -1).id,
         });
         this.getRegion('selectbox2Region').show(selectbox2View);
