@@ -35,12 +35,10 @@ module.exports = Backbone.Marionette.LayoutView.extend({
 
     },
     onChangeSelectbox: function(view, value, model) {
-        console.log(view);
         console.log(value);
         console.log(JSON.stringify(model.attributes));
     },
     onChangeSelectUser: function(view, value, model) {
-        console.log(view);
         console.log(value);
         console.log(JSON.stringify(model.attributes));
     },

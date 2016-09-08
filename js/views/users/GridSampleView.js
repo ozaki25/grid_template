@@ -39,7 +39,6 @@ module.exports = Backbone.Marionette.LayoutView.extend({
         if(confirm('Are you ok?')) view.model.destroy();
     },
     onChangeSelectUser: function(view, value, model) {
-        console.log(view);
         console.log(value);
         console.log(JSON.stringify(model.attributes));
     },

@@ -483,7 +483,6 @@ module.exports = Backbone.Marionette.LayoutView.extend({
         if(confirm('Are you ok?')) view.model.destroy();
     },
     onChangeSelectUser: function(view, value, model) {
-        console.log(view);
         console.log(value);
         console.log(JSON.stringify(model.attributes));
     },
@@ -515,10 +514,6 @@ module.exports = Backbone.Marionette.LayoutView.extend({
     },
     renderInput: function() {
         var input1View = new InputView({ _id: 'username' });
-        this.getRegion('input1Region').show(input1View);
-        var button1View = new ButtonView({ label: 'submit!', clickEventName: 'click:submit1' });
-        this.getRegion('submitButton1Region').show(button1View);
-
         var input2View = new InputView({
             _id: 'input_email',
             _className: 'form-control email',
@@ -526,8 +521,11 @@ module.exports = Backbone.Marionette.LayoutView.extend({
             _type: 'email',
             attrs: { name: 'email' }
         });
-        this.getRegion('input2Region').show(input2View);
+        var button1View = new ButtonView({ label: 'submit!', clickEventName: 'click:submit1' });
         var button2View = new ButtonView({ label: 'submit!!', clickEventName: 'click:submit2' });
+        this.getRegion('input1Region').show(input1View);
+        this.getRegion('input2Region').show(input2View);
+        this.getRegion('submitButton1Region').show(button1View);
         this.getRegion('submitButton2Region').show(button2View);
     },
     onChangeInput: function(view, value) {
@@ -633,12 +631,10 @@ module.exports = Backbone.Marionette.LayoutView.extend({
 
     },
     onChangeSelectbox: function(view, value, model) {
-        console.log(view);
         console.log(value);
         console.log(JSON.stringify(model.attributes));
     },
     onChangeSelectUser: function(view, value, model) {
-        console.log(view);
         console.log(value);
         console.log(JSON.stringify(model.attributes));
     },
@@ -670,18 +666,17 @@ module.exports = Backbone.Marionette.LayoutView.extend({
     },
     renderTextarea: function() {
         var textarea1View = new TextareaView({ _id: 'textarea' });
-        this.getRegion('textarea1Region').show(textarea1View);
-        var button1View = new ButtonView({ label: 'submit!', clickEventName: 'click:submit1' });
-        this.getRegion('submitButton1Region').show(button1View);
-
         var textarea2View = new TextareaView({
             _id: 'message',
             _className: 'form-control message',
             _value: 'I like Backbone and Marionette.',
             attrs: { name: 'message', rows: 5 }
         });
-        this.getRegion('textarea2Region').show(textarea2View);
+        var button1View = new ButtonView({ label: 'submit!', clickEventName: 'click:submit1' });
         var button2View = new ButtonView({ label: 'submit!!', clickEventName: 'click:submit2' });
+        this.getRegion('textarea1Region').show(textarea1View);
+        this.getRegion('submitButton1Region').show(button1View);
+        this.getRegion('textarea2Region').show(textarea2View);
         this.getRegion('submitButton2Region').show(button2View);
     },
     onChangeTextarea: function(view, value) {

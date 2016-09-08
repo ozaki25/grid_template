@@ -23,10 +23,6 @@ module.exports = Backbone.Marionette.LayoutView.extend({
     },
     renderInput: function() {
         var input1View = new InputView({ _id: 'username' });
-        this.getRegion('input1Region').show(input1View);
-        var button1View = new ButtonView({ label: 'submit!', clickEventName: 'click:submit1' });
-        this.getRegion('submitButton1Region').show(button1View);
-
         var input2View = new InputView({
             _id: 'input_email',
             _className: 'form-control email',
@@ -34,8 +30,11 @@ module.exports = Backbone.Marionette.LayoutView.extend({
             _type: 'email',
             attrs: { name: 'email' }
         });
-        this.getRegion('input2Region').show(input2View);
+        var button1View = new ButtonView({ label: 'submit!', clickEventName: 'click:submit1' });
         var button2View = new ButtonView({ label: 'submit!!', clickEventName: 'click:submit2' });
+        this.getRegion('input1Region').show(input1View);
+        this.getRegion('input2Region').show(input2View);
+        this.getRegion('submitButton1Region').show(button1View);
         this.getRegion('submitButton2Region').show(button2View);
     },
     onChangeInput: function(view, value) {
