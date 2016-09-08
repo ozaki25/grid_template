@@ -8,11 +8,16 @@ var TextareaView = Backbone.Marionette.ItemView.extend({
         return Backbone.$.extend(this.options.attrs, {
             id: this.options._id,
             class: this.options._className || 'form-control',
-            value: this.options._value,
         });
     },
-    template: _.template(''),
+    template: _.template('<%= value %>'),
+    templateHelpers: function() {
+        return {
+            value: this.value,
+        }
+    },
     initialize: function(options) {
+        this.value = this.options._value;
         this.changeEventName = options.changeEventName || 'change:textarea';
         this.keypressEventName = options.keypressEventName || 'keypress:textarea';
     },

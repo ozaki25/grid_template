@@ -3,7 +3,7 @@ Backbone.Marionette = require('backbone.marionette');
 var ButtonView = require('../../lib/ButtonView');
 
 module.exports = Backbone.Marionette.LayoutView.extend({
-    className: 'col-md-2',
+    className: 'col-md-1',
     template: '#button_sample_view',
     regions: {
         button1Region: '#button_1_region',

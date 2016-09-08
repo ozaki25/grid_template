@@ -5,6 +5,7 @@ var GridSampleView = require('./GridSampleView');
 var ButtonSampleView = require('./ButtonSampleView');
 var SelectboxSampleView = require('./SelectboxSampleView');
 var InputSampleView = require('./InputSampleView');
+var TextareaSampleView = require('./TextareaSampleView');
 
 module.exports = Backbone.Marionette.LayoutView.extend({
     className: 'container',
@@ -23,6 +24,7 @@ module.exports = Backbone.Marionette.LayoutView.extend({
         this.renderButtonSample();
         this.renderSelectboxSample();
         this.renderInputSample();
+        this.renderTextareaSample();
     },
     renderUserForm: function() {
         this.getRegion('userFormRegion').show(new FormView({ collection: this.collection }));
@@ -38,5 +40,8 @@ module.exports = Backbone.Marionette.LayoutView.extend({
     },
     renderInputSample: function() {
         this.getRegion('inputSampleRegion').show(new InputSampleView());
+    },
+    renderTextareaSample: function() {
+        this.getRegion('textareaSampleRegion').show(new TextareaSampleView());
     },
 });
