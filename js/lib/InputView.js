@@ -9,6 +9,7 @@ var InputView = Backbone.Marionette.ItemView.extend({
             id: this.options._id,
             class: this.options._className || 'form-control',
             value: this.options._value,
+            type: this.options._type || 'text',
         });
     },
     template: _.template(''),
