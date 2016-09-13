@@ -30,6 +30,9 @@ module.exports = Backbone.Marionette.LayoutView.extend({
             attrs: { name: 'selectUser', 'data-target': '#button' },
             optionAttrs: { class: 'select-option' },
             selected: this.collection.at(this.collection.length -1).id,
+            blank: true,
+            blankMessage: '未選択',
+            blankValue: 'blank',
         });
         this.getRegion('selectbox2Region').show(selectbox2View);
 
