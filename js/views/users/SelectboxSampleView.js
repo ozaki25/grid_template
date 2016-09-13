@@ -17,7 +17,7 @@ module.exports = Backbone.Marionette.LayoutView.extend({
         this.renderSelectbox();
     },
     renderSelectbox: function() {
-        var selectbox1View = new SelectboxView({ collection: this.collection, label: 'name', value: 'id' });
+        var selectbox1View = new SelectboxView({ collection: this.collection, label: 'name', value: 'id', blank: true });
         this.getRegion('selectbox1Region').show(selectbox1View);
 
         var selectbox2View = new SelectboxView({

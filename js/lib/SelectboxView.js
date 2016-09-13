@@ -64,7 +64,7 @@ var SelectboxView = Backbone.Marionette.CollectionView.extend({
         this.optionAttrs = options.optionAttrs;
         this.selected = options.selected;
         this.blank = options.blank;
-        this.blankMessage = options.blankMessage;
+        this.blankMessage = options.blankMessage || '';
         this.blankValue = options.blankValue || '';
         this.changeEventName = options.changeEventName || 'change:selectbox';
         if(this.blank) this.appendBlankOption();
@@ -80,8 +80,8 @@ var SelectboxView = Backbone.Marionette.CollectionView.extend({
     },
     appendBlankOption: function() {
         var blankOption = Backbone.$('<option>');
-        if(this.blankMessage) blankOption.text(this.blankMessage);
-        if(this.blankValue) blankOption.val(this.blankValue);
+        blankOption.text(this.blankMessage);
+        blankOption.val(this.blankValue);
         this.$el.append(blankOption);
     },
 });
