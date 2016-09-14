@@ -26,7 +26,7 @@ module.exports = Backbone.Marionette.ItemView.extend({
         });
         var options = {
             wait: true,
-            success: function() { this.ui.inputs.val(''); },
+            success: function() { this.ui.inputs.val(''); }.bind(this),
         }
         this.collection.create(this.model, options);
     },
