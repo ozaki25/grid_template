@@ -135,7 +135,12 @@ var GridRowView = Backbone.Marionette.LayoutView.extend({
 
 var GridView = Backbone.Marionette.CompositeView.extend({
     tagName: 'table',
-    className: 'table table-bordered',
+    attributes: function() {
+        return Backbone.$.extend(this.options.attrs, {
+            id: this.options._id,
+            class: this.options._className || 'table',
+        });
+    },
     childView: GridRowView,
     childViewContainer: '#grid_child_container',
     childViewOptions: function() {
@@ -169,7 +174,7 @@ var GridView = Backbone.Marionette.CompositeView.extend({
         'click @ui.tableHeader': 'onClickTableHeader',
     },
     onClickTableHeader: function(e) {
-        if(this.sort) {
+        if(this.sortable) {
             this.collection.comparator = this.$(e.target).attr('name');
             this.collection.sort();
         }
@@ -501,7 +506,15 @@ module.exports = Backbone.Marionette.LayoutView.extend({
             { label: '#', child: { view: SelectboxView, options: { collection: this.collection, label: 'name', value: 'id', changeEventName: 'change:username' } } },
         ];
         var eventNames = ['click:edit', 'click:destroy', 'change:username'];
-        var gridView = new GridView({ collection: this.collection, columns: columns, sort: true, eventNames: eventNames });
+        var gridView = new GridView({
+            collection: this.collection,
+            columns: columns,
+            _id: 'user_table',
+            _className: 'table table-bordered table-hover',
+            attrs: { name: 'userTable' },
+            sort: true,
+            eventNames: eventNames
+        });
         this.getRegion('userTableRegion').show(gridView);
     },
     onClickEditButton: function(view) {

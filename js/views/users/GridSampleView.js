@@ -29,7 +29,15 @@ module.exports = Backbone.Marionette.LayoutView.extend({
             { label: '#', child: { view: SelectboxView, options: { collection: this.collection, label: 'name', value: 'id', changeEventName: 'change:username' } } },
         ];
         var eventNames = ['click:edit', 'click:destroy', 'change:username'];
-        var gridView = new GridView({ collection: this.collection, columns: columns, sort: true, eventNames: eventNames });
+        var gridView = new GridView({
+            collection: this.collection,
+            columns: columns,
+            _id: 'user_table',
+            _className: 'table table-bordered table-hover',
+            attrs: { name: 'userTable' },
+            sort: true,
+            eventNames: eventNames
+        });
         this.getRegion('userTableRegion').show(gridView);
     },
     onClickEditButton: function(view) {

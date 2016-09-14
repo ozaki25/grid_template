@@ -50,7 +50,12 @@ var GridRowView = Backbone.Marionette.LayoutView.extend({
 
 var GridView = Backbone.Marionette.CompositeView.extend({
     tagName: 'table',
-    className: 'table table-bordered',
+    attributes: function() {
+        return Backbone.$.extend(this.options.attrs, {
+            id: this.options._id,
+            class: this.options._className || 'table',
+        });
+    },
     childView: GridRowView,
     childViewContainer: '#grid_child_container',
     childViewOptions: function() {
@@ -84,7 +89,7 @@ var GridView = Backbone.Marionette.CompositeView.extend({
         'click @ui.tableHeader': 'onClickTableHeader',
     },
     onClickTableHeader: function(e) {
-        if(this.sort) {
+        if(this.sortable) {
             this.collection.comparator = this.$(e.target).attr('name');
             this.collection.sort();
         }
