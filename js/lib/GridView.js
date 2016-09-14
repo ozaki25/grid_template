@@ -9,8 +9,14 @@ var GridRowView = Backbone.Marionette.LayoutView.extend({
     templateHelpers: function() {
         return {
             values: _(this.columns).map(function(col) {
-                var value = col.view ? '' : this.model.get(col.name);
                 var id = 'table_data_' + this.model.id + '_' + (col.view ? col.view.cid : col.name);
+                var value = '';
+                if(!col.view) {
+                    var nameSplit = col.name.split('.');
+                    value = _(nameSplit).reduce(function(tmp, name) {
+                        return tmp ? tmp[name] : '';
+                    }, this.model.get(nameSplit.shift()));
+                }
                 return '<td id="' + id + '">' + value + '</td>';
             }.bind(this))
         }

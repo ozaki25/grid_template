@@ -94,8 +94,14 @@ var GridRowView = Backbone.Marionette.LayoutView.extend({
     templateHelpers: function() {
         return {
             values: _(this.columns).map(function(col) {
-                var value = col.view ? '' : this.model.get(col.name);
                 var id = 'table_data_' + this.model.id + '_' + (col.view ? col.view.cid : col.name);
+                var value = '';
+                if(!col.view) {
+                    var nameSplit = col.name.split('.');
+                    value = _(nameSplit).reduce(function(tmp, name) {
+                        return tmp ? tmp[name] : '';
+                    }, this.model.get(nameSplit.shift()));
+                }
                 return '<td id="' + id + '">' + value + '</td>';
             }.bind(this))
         }
@@ -339,6 +345,15 @@ module.exports = TextareaView;
 var Backbone = require('backbone');
 
 module.exports = Backbone.Model.extend({
+    defaults: {
+        team: {
+            name: '研究開発',
+            job: {
+                main: 'javascriptFW開発',
+                sub: '社内システム開発',
+            }
+        }
+    },
     validation: {
         name: {
             required: true,
@@ -479,6 +494,8 @@ module.exports = Backbone.Marionette.LayoutView.extend({
             { label: 'ID', name: 'id' },
             { label: '部署', name: 'dept' },
             { label: '名前', name: 'name' },
+            { label: 'チーム名', name: 'team.name' },
+            { label: 'チームの仕事内容', name: 'team.job.main' },
             { label: '#', child: { view: ButtonView, options: { label: 'Edit', clickEventName: 'click:edit', _className: 'btn btn-xs btn-primary' } } },
             { label: '#', child: { view: ButtonView, options: { label: 'Destroy', clickEventName: 'click:destroy' } } },
             { label: '#', child: { view: SelectboxView, options: { collection: this.collection, label: 'name', value: 'id', changeEventName: 'change:username' } } },
