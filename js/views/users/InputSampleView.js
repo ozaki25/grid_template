@@ -7,16 +7,16 @@ module.exports = Backbone.Marionette.LayoutView.extend({
     className: 'col-md-4',
     template: '#input_sample_view',
     regions: {
-        input1Region: '#input_1_region',
-        input2Region: '#input_2_region',
+        input1Region       : '#input_1_region',
+        input2Region       : '#input_2_region',
         submitButton1Region: '#submit_button_1_region',
         submitButton2Region: '#submit_button_2_region',
     },
     childEvents: {
-        'change:input': 'onChangeInput',
+        'change:input'  : 'onChangeInput',
         'keypress:input': 'onKeypressInput',
-        'click:submit1': 'onClickSubmit1Button',
-        'click:submit2': 'onClickSubmit2Button',
+        'click:submit1' : 'onClickSubmit1Button',
+        'click:submit2' : 'onClickSubmit2Button',
     },
     onBeforeShow: function() {
         this.renderInput();

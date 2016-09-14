@@ -11,15 +11,13 @@ module.exports = Backbone.Marionette.LayoutView.extend({
     },
     childEvents: {
         'change:selectbox': 'onChangeSelectbox',
-        'change:username': 'onChangeSelectUser',
+        'change:username' : 'onChangeSelectUser',
     },
     onBeforeShow: function() {
         this.renderSelectbox();
     },
     renderSelectbox: function() {
         var selectbox1View = new SelectboxView({ collection: this.collection, label: 'name', value: 'id', blank: true });
-        this.getRegion('selectbox1Region').show(selectbox1View);
-
         var selectbox2View = new SelectboxView({
             collection: this.collection,
             label: 'name',
@@ -34,6 +32,7 @@ module.exports = Backbone.Marionette.LayoutView.extend({
             blankLabel: '未選択',
             blankValue: 'blank',
         });
+        this.getRegion('selectbox1Region').show(selectbox1View);
         this.getRegion('selectbox2Region').show(selectbox2View);
 
     },

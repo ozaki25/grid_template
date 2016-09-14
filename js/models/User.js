@@ -21,6 +21,9 @@ module.exports = Backbone.Model.extend({
         }, {
             range: [0, 100],
             msg: '0〜100を入力して下さい。'
-        }]
+        }],
+        dept: {
+
+        }
     }
 });

@@ -8,10 +8,10 @@ module.exports = Backbone.Marionette.ItemView.extend({
     template: '#user_form_view',
     ui: {
         inputName: 'input.name',
-        inputAge: 'input.age',
+        inputAge : 'input.age',
         inputDept: 'input.dept',
-        inputs: 'input',
-        createBtn: '.create-btn'
+        inputs   : 'input',
+        createBtn: 'button.create-btn'
     },
     events: {
         'click @ui.createBtn': 'onClickCreate'
@@ -26,7 +26,7 @@ module.exports = Backbone.Marionette.ItemView.extend({
         });
         var options = {
             wait: true,
-            success: () => this.ui.inputs.val('')
+            success: function() { this.ui.inputs.val(''); },
         }
         this.collection.create(this.model, options);
     },

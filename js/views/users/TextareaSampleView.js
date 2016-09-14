@@ -7,16 +7,16 @@ module.exports = Backbone.Marionette.LayoutView.extend({
     className: 'col-md-5',
     template: '#textarea_sample_view',
     regions: {
-        textarea1Region: '#textarea_1_region',
-        textarea2Region: '#textarea_2_region',
+        textarea1Region    : '#textarea_1_region',
+        textarea2Region    : '#textarea_2_region',
         submitButton1Region: '#submit_button_1_region',
         submitButton2Region: '#submit_button_2_region',
     },
     childEvents: {
-        'change:textarea': 'onChangeTextarea',
+        'change:textarea'  : 'onChangeTextarea',
         'keypress:textarea': 'onKeypressTextarea',
-        'click:submit1': 'onClickSubmit1Button',
-        'click:submit2': 'onClickSubmit2Button',
+        'click:submit1'    : 'onClickSubmit1Button',
+        'click:submit2'    : 'onClickSubmit2Button',
     },
     onBeforeShow: function() {
         this.renderTextarea();
