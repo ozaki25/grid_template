@@ -11,12 +11,12 @@ module.exports = Backbone.Marionette.LayoutView.extend({
     className: 'container',
     template: '#user_main_view',
     regions: {
-        userFormRegion: '#user_form_region',
-        gridSampleRegion: '#grid_sample_region',
-        buttonSampleRegion: '#button_sample_region',
+        userFormRegion       : '#user_form_region',
+        gridSampleRegion     : '#grid_sample_region',
+        buttonSampleRegion   : '#button_sample_region',
         selectboxSampleRegion: '#selectbox_sample_region',
-        inputSampleRegion: '#input_sample_region',
-        textareaSampleRegion: '#textarea_sample_region',
+        inputSampleRegion    : '#input_sample_region',
+        textareaSampleRegion : '#textarea_sample_region',
     },
     onBeforeShow: function() {
         this.renderUserForm();

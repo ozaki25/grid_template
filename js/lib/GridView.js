@@ -1,7 +1,6 @@
 var _ = require('underscore');
 var Backbone = require('backbone');
 Backbone.Marionette = require('backbone.marionette');
-var ButtonView = require('./ButtonView');
 
 var GridRowView = Backbone.Marionette.LayoutView.extend({
     tagName: 'tr',

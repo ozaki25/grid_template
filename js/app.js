@@ -86,7 +86,6 @@ module.exports = ButtonView;
 var _ = require('underscore');
 var Backbone = require('backbone');
 Backbone.Marionette = require('backbone.marionette');
-var ButtonView = require('./ButtonView');
 
 var GridRowView = Backbone.Marionette.LayoutView.extend({
     tagName: 'tr',
@@ -183,7 +182,7 @@ var GridView = Backbone.Marionette.CompositeView.extend({
 
 module.exports = GridView;
 
-},{"./ButtonView":3,"backbone":"backbone","backbone.marionette":19,"underscore":"underscore"}],5:[function(require,module,exports){
+},{"backbone":"backbone","backbone.marionette":19,"underscore":"underscore"}],5:[function(require,module,exports){
 var _ = require('underscore');
 var Backbone = require('backbone');
 Backbone.Marionette = require('backbone.marionette');
@@ -370,7 +369,10 @@ module.exports = Backbone.Model.extend({
         }, {
             range: [0, 100],
             msg: '0〜100を入力して下さい。'
-        }]
+        }],
+        dept: {
+
+        }
     }
 });
 
@@ -435,10 +437,10 @@ module.exports = Backbone.Marionette.ItemView.extend({
     template: '#user_form_view',
     ui: {
         inputName: 'input.name',
-        inputAge: 'input.age',
+        inputAge : 'input.age',
         inputDept: 'input.dept',
-        inputs: 'input',
-        createBtn: '.create-btn'
+        inputs   : 'input',
+        createBtn: 'button.create-btn'
     },
     events: {
         'click @ui.createBtn': 'onClickCreate'
@@ -453,7 +455,7 @@ module.exports = Backbone.Marionette.ItemView.extend({
         });
         var options = {
             wait: true,
-            success: () => this.ui.inputs.val('')
+            success: function() { this.ui.inputs.val(''); }.bind(this),
         }
         this.collection.create(this.model, options);
     },
@@ -487,8 +489,8 @@ module.exports = Backbone.Marionette.LayoutView.extend({
         userTableRegion: '#user_table_region',
     },
     childEvents: {
-        'click:edit': 'onClickEditButton',
-        'click:destroy': 'onClickDestroyButton',
+        'click:edit'     : 'onClickEditButton',
+        'click:destroy'  : 'onClickDestroyButton',
         'change:username': 'onChangeSelectUser',
     },
     onBeforeShow: function() {
@@ -513,7 +515,7 @@ module.exports = Backbone.Marionette.LayoutView.extend({
             _className: 'table table-bordered table-hover',
             attrs: { name: 'userTable' },
             sort: true,
-            eventNames: eventNames
+            eventNames: eventNames,
         });
         this.getRegion('userTableRegion').show(gridView);
     },
@@ -541,16 +543,16 @@ module.exports = Backbone.Marionette.LayoutView.extend({
     className: 'col-md-4',
     template: '#input_sample_view',
     regions: {
-        input1Region: '#input_1_region',
-        input2Region: '#input_2_region',
+        input1Region       : '#input_1_region',
+        input2Region       : '#input_2_region',
         submitButton1Region: '#submit_button_1_region',
         submitButton2Region: '#submit_button_2_region',
     },
     childEvents: {
-        'change:input': 'onChangeInput',
+        'change:input'  : 'onChangeInput',
         'keypress:input': 'onKeypressInput',
-        'click:submit1': 'onClickSubmit1Button',
-        'click:submit2': 'onClickSubmit2Button',
+        'click:submit1' : 'onClickSubmit1Button',
+        'click:submit2' : 'onClickSubmit2Button',
     },
     onBeforeShow: function() {
         this.renderInput();
@@ -601,12 +603,12 @@ module.exports = Backbone.Marionette.LayoutView.extend({
     className: 'container',
     template: '#user_main_view',
     regions: {
-        userFormRegion: '#user_form_region',
-        gridSampleRegion: '#grid_sample_region',
-        buttonSampleRegion: '#button_sample_region',
+        userFormRegion       : '#user_form_region',
+        gridSampleRegion     : '#grid_sample_region',
+        buttonSampleRegion   : '#button_sample_region',
         selectboxSampleRegion: '#selectbox_sample_region',
-        inputSampleRegion: '#input_sample_region',
-        textareaSampleRegion: '#textarea_sample_region',
+        inputSampleRegion    : '#input_sample_region',
+        textareaSampleRegion : '#textarea_sample_region',
     },
     onBeforeShow: function() {
         this.renderUserForm();
@@ -650,15 +652,13 @@ module.exports = Backbone.Marionette.LayoutView.extend({
     },
     childEvents: {
         'change:selectbox': 'onChangeSelectbox',
-        'change:username': 'onChangeSelectUser',
+        'change:username' : 'onChangeSelectUser',
     },
     onBeforeShow: function() {
         this.renderSelectbox();
     },
     renderSelectbox: function() {
         var selectbox1View = new SelectboxView({ collection: this.collection, label: 'name', value: 'id', blank: true });
-        this.getRegion('selectbox1Region').show(selectbox1View);
-
         var selectbox2View = new SelectboxView({
             collection: this.collection,
             label: 'name',
@@ -668,11 +668,12 @@ module.exports = Backbone.Marionette.LayoutView.extend({
             _className: 'form-control select-user',
             attrs: { name: 'selectUser', 'data-target': '#button' },
             optionAttrs: { class: 'select-option' },
-            selected: this.collection.at(this.collection.length -1).id,
+            selected: this.collection.length == 0 ? '' : this.collection.at(this.collection.length -1).id,
             blank: true,
             blankLabel: '未選択',
             blankValue: 'blank',
         });
+        this.getRegion('selectbox1Region').show(selectbox1View);
         this.getRegion('selectbox2Region').show(selectbox2View);
 
     },
@@ -696,16 +697,16 @@ module.exports = Backbone.Marionette.LayoutView.extend({
     className: 'col-md-5',
     template: '#textarea_sample_view',
     regions: {
-        textarea1Region: '#textarea_1_region',
-        textarea2Region: '#textarea_2_region',
+        textarea1Region    : '#textarea_1_region',
+        textarea2Region    : '#textarea_2_region',
         submitButton1Region: '#submit_button_1_region',
         submitButton2Region: '#submit_button_2_region',
     },
     childEvents: {
-        'change:textarea': 'onChangeTextarea',
+        'change:textarea'  : 'onChangeTextarea',
         'keypress:textarea': 'onKeypressTextarea',
-        'click:submit1': 'onClickSubmit1Button',
-        'click:submit2': 'onClickSubmit2Button',
+        'click:submit1'    : 'onClickSubmit1Button',
+        'click:submit2'    : 'onClickSubmit2Button',
     },
     onBeforeShow: function() {
         this.renderTextarea();
