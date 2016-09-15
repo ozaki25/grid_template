@@ -35,34 +35,12 @@
       <div class="row">
         <div class="col-md-10 col-md-offset-1">
           <div id="user_form_region"></div>
-          <div id="user_table_region"></div>
+          <div id="grid_sample_region"></div>
           <div class="row">
-            <div class="col-md-2">
-              <span id="button_1_region"></span>
-              <span id="button_2_region"></span>
-            </div>
-            <div class="col-md-2">
-              <div class="form-group">
-                <span id="selectbox_1_region"></span>
-              </div>
-              <div class="form-group">
-                <span id="selectbox_2_region"></span>
-              </div>
-            </div>
-            <div class="col-md-4">
-              <form class="form-inline" style="margin-bottom:15px;">
-                <div class="form-group">
-                  <span id="input_1_region"></span>
-                  <span id="submit_button_1_region"></span>
-                </div>
-              </form>
-              <form class="form-inline" style="margin-bottom:15px;">
-                <div class="form-group">
-                  <span id="input_2_region"></span>
-                  <span id="submit_button_2_region"></span>
-                </div>
-              </form>
-            </div>
+            <div id="button_sample_region"></div>
+            <div id="selectbox_sample_region"></div>
+            <div id="input_sample_region"></div>
+            <div id="textarea_sample_region"></div>
           </div>
         </div>
       </div>
@@ -87,6 +65,52 @@
           </div>
           <button type="button" class="btn btn-default create-btn">Submit</button
         </form>
+      </div>
+    </script>
+
+    <script id="grid_sample_view" type="text/template">
+      <div id="user_table_region"></div>
+    </script>
+
+    <script id="button_sample_view" type="text/template">
+      <div id="button_1_region" class="form-group"></div>
+      <div id="button_2_region" class="form-group"></div>
+    </script>
+
+    <script id="selectbox_sample_view" type="text/template">
+      <div class="form-group" id="selectbox_1_region"></div>
+      <div class="form-group" id="selectbox_2_region"></div>
+    </script>
+
+    <script id="input_sample_view" type="text/template">
+      <form class="form-inline" style="margin-bottom:15px;">
+        <div class="form-group">
+          <span id="input_1_region"></span>
+          <span id="submit_button_1_region"></span>
+        </div>
+      </form>
+      <form class="form-inline" style="margin-bottom:15px;">
+        <div class="form-group">
+          <span id="input_2_region"></span>
+          <span id="submit_button_2_region"></span>
+        </div>
+      </form>
+    </script>
+
+    <script id="textarea_sample_view" type="text/template">
+      <div class="row">
+        <div class="col-md-6">
+          <div class="form-group">
+            <span id="textarea_1_region"></span>
+            <span id="submit_button_1_region"></span>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <span id="textarea_2_region"></span>
+            <span id="submit_button_2_region"></span>
+          </div>
+        </div>
       </div>
     </script>
 
