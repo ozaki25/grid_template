@@ -219,8 +219,11 @@ var selectboxView = new SelectboxView({
     attrs: { name: 'selectUser' },                // selectタグの属性
     optionAttrs: { class: 'select-option' },      // optionタグの属性
     selected: this.model.id,                      // デフォルトで選択済みにする項目のid
+    blank: true,                                  // 先頭に空のoptionを入れるかどうか
+    blankLabel: '未選択',                         // 空のoptionのラベル
+    blankValue: 'blank',                          // 空のoptionのvalue
 })
-this.getRegions('selectboxRegion').show(selectboxView);
+this.getRegion('selectboxRegion').show(selectboxView);
 */
 
 var _ = require('underscore');
@@ -269,7 +272,11 @@ var SelectboxView = Backbone.Marionette.CollectionView.extend({
         this.value = options.value;
         this.optionAttrs = options.optionAttrs;
         this.selected = options.selected;
+        this.blank = options.blank;
+        this.blankLabel = options.blankLabel || '';
+        this.blankValue = options.blankValue || '';
         this.changeEventName = options.changeEventName || 'change:selectbox';
+        if(this.blank) this.appendBlankOption();
     },
     events: {
         'change': 'onChange'
@@ -279,7 +286,13 @@ var SelectboxView = Backbone.Marionette.CollectionView.extend({
         var value = this.$el.val();
         var model = this.collection.findWhere({ id: id }) || this.collection.findWhere({ id: parseInt(id) });
         this.triggerMethod(this.changeEventName, value, model);
-    }
+    },
+    appendBlankOption: function() {
+        var blankOption = Backbone.$('<option>');
+        blankOption.text(this.blankLabel);
+        blankOption.val(this.blankValue);
+        this.$el.append(blankOption);
+    },
 });
 
 module.exports = SelectboxView;
@@ -613,7 +626,7 @@ module.exports = Backbone.Marionette.LayoutView.extend({
         this.renderSelectbox();
     },
     renderSelectbox: function() {
-        var selectbox1View = new SelectboxView({ collection: this.collection, label: 'name', value: 'id' });
+        var selectbox1View = new SelectboxView({ collection: this.collection, label: 'name', value: 'id', blank: true });
         this.getRegion('selectbox1Region').show(selectbox1View);
 
         var selectbox2View = new SelectboxView({
@@ -626,6 +639,9 @@ module.exports = Backbone.Marionette.LayoutView.extend({
             attrs: { name: 'selectUser', 'data-target': '#button' },
             optionAttrs: { class: 'select-option' },
             selected: this.collection.at(this.collection.length -1).id,
+            blank: true,
+            blankLabel: '未選択',
+            blankValue: 'blank',
         });
         this.getRegion('selectbox2Region').show(selectbox2View);
 
