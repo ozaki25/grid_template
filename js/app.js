@@ -105,11 +105,15 @@ var GridRowView = Backbone.Marionette.LayoutView.extend({
             }.bind(this))
         }
     },
+    events: {
+        'click': 'onClick',
+    },
     initialize: function(options) {
         this.columns = options.columns;
         _(this.columns).map(function(col) {
             if(col.child) col.view = new col.child.view(col.child.options);
         });
+        this.clickRowEventName = options.clickRowEventName;
         this.eventNames = options.eventNames;
         this.addChildEvents();
     },
@@ -120,6 +124,10 @@ var GridRowView = Backbone.Marionette.LayoutView.extend({
                 this.getRegion(this.model.id + col.view.cid).show(col.view);
             }
         }.bind(this));
+    },
+    onClick: function(e) {
+        e.preventDefault();
+        this.triggerMethod(this.clickRowEventName, e);
     },
     addChildEvents: function() {
         _(this.eventNames).each(function(eventName) {
@@ -145,6 +153,7 @@ var GridView = Backbone.Marionette.CompositeView.extend({
     childViewOptions: function() {
         return {
             columns: this.columns,
+            clickRowEventName: this.clickRowEventName,
             eventNames: this.eventNames,
         }
     },
@@ -164,7 +173,8 @@ var GridView = Backbone.Marionette.CompositeView.extend({
     initialize: function(options) {
         this.sortable = options.sort;
         this.columns = options.columns;
-        this.eventNames = options.eventNames
+        this.clickRowEventName = options.clickRowEventName || 'click:row';
+        this.eventNames = options.eventNames;
     },
     ui: {
          tableHeader: 'th.table-header',
@@ -489,6 +499,7 @@ module.exports = Backbone.Marionette.LayoutView.extend({
         userTableRegion: '#user_table_region',
     },
     childEvents: {
+        'click:row'     : 'onClickRow',
         'click:edit'     : 'onClickEditButton',
         'click:destroy'  : 'onClickDestroyButton',
         'change:username': 'onChangeSelectUser',
@@ -518,6 +529,9 @@ module.exports = Backbone.Marionette.LayoutView.extend({
             eventNames: eventNames,
         });
         this.getRegion('userTableRegion').show(gridView);
+    },
+    onClickRow: function(view, e) {
+        if(!this.$(e.target).is(this.$('button, select'))) alert('click ' + view.model.get('name'));
     },
     onClickEditButton: function(view) {
         alert('click edit button!');
