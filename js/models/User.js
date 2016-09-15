@@ -1,6 +1,15 @@
 var Backbone = require('backbone');
 
 module.exports = Backbone.Model.extend({
+    defaults: {
+        team: {
+            name: '研究開発',
+            job: {
+                main: 'javascriptFW開発',
+                sub: '社内システム開発',
+            }
+        }
+    },
     validation: {
         name: {
             required: true,

@@ -22,12 +22,22 @@ module.exports = Backbone.Marionette.LayoutView.extend({
             { label: 'ID', name: 'id' },
             { label: '部署', name: 'dept' },
             { label: '名前', name: 'name' },
+            { label: 'チーム名', name: 'team.name' },
+            { label: 'チームの仕事内容', name: 'team.job.main' },
             { label: '#', child: { view: ButtonView, options: { label: 'Edit', clickEventName: 'click:edit', _className: 'btn btn-xs btn-primary' } } },
             { label: '#', child: { view: ButtonView, options: { label: 'Destroy', clickEventName: 'click:destroy' } } },
             { label: '#', child: { view: SelectboxView, options: { collection: this.collection, label: 'name', value: 'id', changeEventName: 'change:username' } } },
         ];
         var eventNames = ['click:edit', 'click:destroy', 'change:username'];
-        var gridView = new GridView({ collection: this.collection, columns: columns, sort: true, eventNames: eventNames });
+        var gridView = new GridView({
+            collection: this.collection,
+            columns: columns,
+            _id: 'user_table',
+            _className: 'table table-bordered table-hover',
+            attrs: { name: 'userTable' },
+            sort: true,
+            eventNames: eventNames
+        });
         this.getRegion('userTableRegion').show(gridView);
     },
     onClickEditButton: function(view) {

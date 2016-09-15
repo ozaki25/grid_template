@@ -9,8 +9,14 @@ var GridRowView = Backbone.Marionette.LayoutView.extend({
     templateHelpers: function() {
         return {
             values: _(this.columns).map(function(col) {
-                var value = col.view ? '' : this.model.get(col.name);
                 var id = 'table_data_' + this.model.id + '_' + (col.view ? col.view.cid : col.name);
+                var value = '';
+                if(!col.view) {
+                    var nameSplit = col.name.split('.');
+                    value = _(nameSplit).reduce(function(tmp, name) {
+                        return tmp ? tmp[name] : '';
+                    }, this.model.get(nameSplit.shift()));
+                }
                 return '<td id="' + id + '">' + value + '</td>';
             }.bind(this))
         }
@@ -44,7 +50,12 @@ var GridRowView = Backbone.Marionette.LayoutView.extend({
 
 var GridView = Backbone.Marionette.CompositeView.extend({
     tagName: 'table',
-    className: 'table table-bordered',
+    attributes: function() {
+        return Backbone.$.extend(this.options.attrs, {
+            id: this.options._id,
+            class: this.options._className || 'table',
+        });
+    },
     childView: GridRowView,
     childViewContainer: '#grid_child_container',
     childViewOptions: function() {
@@ -62,7 +73,7 @@ var GridView = Backbone.Marionette.CompositeView.extend({
     templateHelpers: function() {
         return {
             tableHeader: _(this.columns).map(function(col) {
-                return '<th class="table-header" name="' + col.name + '">' + (col.label || col.name) + '</th>'
+                return '<th class="table-header" name="' + col.name + '">' + (col.label || col.name || '') + '</th>'
             }).join('')
         }
     },
@@ -78,7 +89,7 @@ var GridView = Backbone.Marionette.CompositeView.extend({
         'click @ui.tableHeader': 'onClickTableHeader',
     },
     onClickTableHeader: function(e) {
-        if(this.sort) {
+        if(this.sortable) {
             this.collection.comparator = this.$(e.target).attr('name');
             this.collection.sort();
         }
