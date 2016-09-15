@@ -5,7 +5,7 @@ Backbone.Marionette = require('backbone.marionette');
 var ButtonView = Backbone.Marionette.ItemView.extend({
     tagName: 'button',
     attributes: function() {
-        return Backbone.$.extend(this.options._attrs, {
+        return Backbone.$.extend(this.options.attrs, {
             id: this.options._id,
             class: this.options._className || 'btn btn-default',
         });

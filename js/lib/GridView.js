@@ -34,7 +34,9 @@ var GridRowView = Backbone.Marionette.LayoutView.extend({
     addChildEvents: function() {
         _(this.eventNames).each(function(eventName) {
             var event = {};
-            event[eventName] = function() { this.triggerMethod(eventName); };
+            event[eventName] = function() {
+                this.triggerMethod.apply(this, [eventName].concat(_(arguments).rest()));
+            };
             this.childEvents = Backbone.$.extend({}, this.childEvents, event);
         }.bind(this));
     },
