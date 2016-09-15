@@ -8,7 +8,7 @@ module.exports = Backbone.Collection.extend({
     localStorage: new Backbone.LocalStorage('BackboneMarionetteTemplate.Users_2')
 });
 
-},{"../models/User":4,"backbone":"backbone","backbone.localstorage":9}],2:[function(require,module,exports){
+},{"../models/User":5,"backbone":"backbone","backbone.localstorage":10}],2:[function(require,module,exports){
 jQuery = require('jquery');
 require('bootstrap');
 var Backbone = require('backbone');
@@ -48,60 +48,109 @@ var app = new Backbone.Marionette.Application({
 
 app.start();
 
-},{"./collections/Users":1,"./views/HeaderView":5,"./views/users/MainView":7,"backbone":"backbone","backbone.marionette":10,"bootstrap":"bootstrap","jquery":"jquery"}],3:[function(require,module,exports){
+},{"./collections/Users":1,"./views/HeaderView":6,"./views/users/MainView":8,"backbone":"backbone","backbone.marionette":11,"bootstrap":"bootstrap","jquery":"jquery"}],3:[function(require,module,exports){
 var _ = require('underscore');
 var Backbone = require('backbone');
-var _ = require('underscore');
 Backbone.Marionette = require('backbone.marionette');
 
-var GridRowView = Backbone.Marionette.ItemView.extend({
+var ButtonView = Backbone.Marionette.ItemView.extend({
+    tagName: 'button',
+    className: 'btn btn-default',
+    template: _.template('<%= label %>'),
+    templateHelpers: function() {
+        return {
+            label: this.label
+        }
+    },
+    initialize: function(options) {
+        this.label = options.label;
+        this.clickEventName = options.clickEventName || 'click:button';
+    },
+    events: {
+        'click': 'onClick'
+    },
+    onClick: function(e) {
+        e.preventDefault();
+        this.triggerMethod(this.clickEventName);
+    }
+});
+
+module.exports = ButtonView;
+
+},{"backbone":"backbone","backbone.marionette":11,"underscore":"underscore"}],4:[function(require,module,exports){
+var _ = require('underscore');
+var Backbone = require('backbone');
+Backbone.Marionette = require('backbone.marionette');
+var ButtonView = require('./ButtonView');
+
+var GridRowView = Backbone.Marionette.LayoutView.extend({
     tagName: 'tr',
     template: _.template('<%= values %>'),
     templateHelpers: function() {
         return {
-            values: _(this.columnsLengthRange).map(function(i) {
-                return '<td>' + this.model.get(this.columns[i][0]) + '</td>'
+            values: _(this.columns).map(function(col) {
+                var value = col.view ? '' : this.model.get(col.name);
+                var id = 'table_data_' + this.model.id + '_' + (col.view ? col.view.cid : col.name);
+                return '<td id="' + id + '">' + value + '</td>';
             }.bind(this))
         }
     },
     initialize: function(options) {
         this.columns = options.columns;
-        this.columnsLengthRange = options.columnsLengthRange;
+        _(this.columns).map(function(col) {
+            if(col.child) col.view = new col.child.view(col.child.options);
+        });
+        this.eventNames = options.eventNames;
+        this.addChildEvents();
+    },
+    onRender: function() {
+        _(this.columns).each(function(col) {
+            if(col.view) {
+                this.addRegion(this.model.id + col.view.cid, '#table_data_' + this.model.id + '_' + col.view.cid);
+                this.getRegion(this.model.id + col.view.cid).show(col.view);
+            }
+        }.bind(this));
+    },
+    addChildEvents: function() {
+        _(this.eventNames).each(function(eventName) {
+            var event = {};
+            event[eventName] = function() { this.triggerMethod(eventName); };
+            this.childEvents = Backbone.$.extend({}, this.childEvents, event);
+        }.bind(this));
     },
 });
 
-var GridTemplateView = Backbone.Marionette.CompositeView.extend({
+var GridView = Backbone.Marionette.CompositeView.extend({
+    tagName: 'table',
+    className: 'table table-bordered',
     childView: GridRowView,
-    childViewContainer: '#grid_row_child_container',
+    childViewContainer: '#grid_child_container',
     childViewOptions: function() {
         return {
             columns: this.columns,
-            columnsLengthRange: this.columnsLengthRange,
+            eventNames: this.eventNames,
         }
     },
     template: _.template(
-      '<table class="table table-bordered">' +
-        '<thead>' +
-          '<tr><%= tableHeader %></tr>' +
-        '</thead>' +
-        '<tbody id="grid_row_child_container"></tbody>' +
-      '</table>'
+      '<thead>' +
+        '<tr><%= tableHeader %></tr>' +
+      '</thead>' +
+      '<tbody id="grid_child_container"></tbody>'
     ),
     templateHelpers: function() {
         return {
-            tableHeader: _(this.columnsLengthRange).map(function(i) {
-                return '<th class="table-header" name="' + this.columns[i][0] + '">' + (this.columns[i][1] || this.columns[i][0]) + '</th>'
-            }.bind(this)).join('')
+            tableHeader: _(this.columns).map(function(col) {
+                return '<th class="table-header" name="' + col.name + '">' + (col.label || col.name) + '</th>'
+            }).join('')
         }
     },
     initialize: function(options) {
-        this.sort = options.sort;
+        this.sortable = options.sort;
         this.columns = options.columns;
-        var columnsLength = this.columns ? Object.keys(this.columns).length : 0;
-        this.columnsLengthRange= _.range(1, columnsLength + 1);
+        this.eventNames = options.eventNames
     },
     ui: {
-        tableHeader: 'th.table-header',
+         tableHeader: 'th.table-header',
     },
     events: {
         'click @ui.tableHeader': 'onClickTableHeader',
@@ -114,9 +163,9 @@ var GridTemplateView = Backbone.Marionette.CompositeView.extend({
     }
 });
 
-module.exports = GridTemplateView;
+module.exports = GridView;
 
-},{"backbone":"backbone","backbone.marionette":10,"underscore":"underscore"}],4:[function(require,module,exports){
+},{"./ButtonView":3,"backbone":"backbone","backbone.marionette":11,"underscore":"underscore"}],5:[function(require,module,exports){
 var Backbone = require('backbone');
 
 module.exports = Backbone.Model.extend({
@@ -135,7 +184,7 @@ module.exports = Backbone.Model.extend({
     }
 });
 
-},{"backbone":"backbone"}],5:[function(require,module,exports){
+},{"backbone":"backbone"}],6:[function(require,module,exports){
 var Backbone = require('backbone');
 Backbone.Marionette = require('backbone.marionette');
 
@@ -144,7 +193,7 @@ module.exports = Backbone.Marionette.ItemView.extend({
 });
 
 
-},{"backbone":"backbone","backbone.marionette":10}],6:[function(require,module,exports){
+},{"backbone":"backbone","backbone.marionette":11}],7:[function(require,module,exports){
 var Backbone = require('backbone');
 Backbone.Marionette = require('backbone.marionette');
 Backbone.Validation = require('backbone.validation');
@@ -194,36 +243,76 @@ module.exports = Backbone.Marionette.ItemView.extend({
 });
 
 
-},{"../../models/User":4,"backbone":"backbone","backbone.marionette":10,"backbone.validation":"backbone.validation"}],7:[function(require,module,exports){
+},{"../../models/User":5,"backbone":"backbone","backbone.marionette":11,"backbone.validation":"backbone.validation"}],8:[function(require,module,exports){
 var Backbone = require('backbone');
 Backbone.Marionette = require('backbone.marionette');
 var FormView = require('./FormView');
-var GridView = require('../../lib/GridTemplateView');
+var GridView = require('../../lib/GridView');
+var ButtonView = require('../../lib/ButtonView');
 
 module.exports = Backbone.Marionette.LayoutView.extend({
     className: 'container',
     template: '#user_main_view',
     regions: {
         userFormRegion: '#user_form_region',
-        userTableRegion: '#user_table_region'
+        userTableRegion: '#user_table_region',
+        button1Region: '#button_1_region',
+        button2Region: '#button_2_region',
+        button3Region: '#button_3_region',
+    },
+    childEvents: {
+        'click:button': 'onClickButton',
+        'click:edit': 'onClickEditButton',
+        'click:destroy': 'onClickDestroyButton',
     },
     onRender: function() {
         this.renderUserForm();
         this.renderUserTable();
+        this.renderButton1();
+        this.renderButton2();
+        this.renderButton3();
     },
     renderUserForm: function() {
         var formView = new FormView({ collection: this.collection });
         this.getRegion('userFormRegion').show(formView);
     },
     renderUserTable: function() {
-        var columns = { 1: ['id', 'ID'], 2: ['name', '名前'], 3: ['dept', '部署'] };
-        var gridView = new GridView({ collection: this.collection, columns: columns, sort: true });
+        var buttonView = new ButtonView();
+        var columns = [
+            { label: 'ID', name: 'id' },
+            { label: '部署', name: 'dept' },
+            { label: '名前', name: 'name' },
+            { label: '#', child: { view: ButtonView, options: { label: 'Edit', clickEventName: 'click:edit' } } },
+            { label: '#', child: { view: ButtonView, options: { label: 'Destroy', clickEventName: 'click:destroy' } } },
+        ];
+        var eventNames = ['click:edit', 'click:destroy'];
+        var gridView = new GridView({ collection: this.collection, columns: columns, sort: true, eventNames: eventNames });
         this.getRegion('userTableRegion').show(gridView);
+    },
+    renderButton1: function() {
+        var buttonView = new ButtonView({ label: 'submit' });
+        this.getRegion('button1Region').show(buttonView);
+    },
+    renderButton2: function() {
+        var buttonView = new ButtonView({ label: 'submit', clickEventName: 'click:edit' });
+        this.getRegion('button2Region').show(buttonView);
+    },
+    renderButton3: function() {
+    },
+    onClickButton: function(view) {
+        alert('click button!');
+    },
+    onClickEditButton: function(view) {
+        alert('click edit button!');
+        console.log('edit : ' + JSON.stringify(view.model.attributes));
+    },
+    onClickDestroyButton: function(view) {
+        console.log('destroy : ' + JSON.stringify(view.model.attributes));
+        if(confirm('are you ok?')) view.model.destroy();
     },
 });
 
-
-},{"../../lib/GridTemplateView":3,"./FormView":6,"backbone":"backbone","backbone.marionette":10}],8:[function(require,module,exports){
+},{"../../lib/ButtonView":3,"../../lib/GridView":4,"./FormView":7,"backbone":"backbone","backbone.marionette":11}],9:[function(require,module,exports){
 // Backbone.BabySitter
 // -------------------
 // v0.1.11
@@ -415,7 +504,7 @@ module.exports = Backbone.Marionette.LayoutView.extend({
 
 }));
 
-},{"backbone":"backbone","underscore":"underscore"}],9:[function(require,module,exports){
+},{"backbone":"backbone","underscore":"underscore"}],10:[function(require,module,exports){
 /**
  * Backbone localStorage Adapter
  * Version 1.1.16
@@ -675,7 +764,7 @@ Backbone.sync = function(method, model, options) {
 return Backbone.LocalStorage;
 }));
 
-},{"backbone":"backbone"}],10:[function(require,module,exports){
+},{"backbone":"backbone"}],11:[function(require,module,exports){
 // MarionetteJS (Backbone.Marionette)
 // ----------------------------------
 // v2.4.7
@@ -4189,7 +4278,7 @@ return Backbone.LocalStorage;
   return Marionette;
 }));
 
-},{"backbone":"backbone","backbone.babysitter":8,"backbone.wreqr":11,"underscore":"underscore"}],11:[function(require,module,exports){
+},{"backbone":"backbone","backbone.babysitter":9,"backbone.wreqr":12,"underscore":"underscore"}],12:[function(require,module,exports){
 // Backbone.Wreqr (Backbone.Marionette)
 // ----------------------------------
 // v1.3.6
@@ -4626,7 +4715,7 @@ return Backbone.LocalStorage;
 
 }));
 
-},{"backbone":"backbone","underscore":"underscore"}],12:[function(require,module,exports){
+},{"backbone":"backbone","underscore":"underscore"}],13:[function(require,module,exports){
 /* ========================================================================
  * Bootstrap: affix.js v3.3.6
  * http://getbootstrap.com/javascript/#affix
@@ -4790,7 +4879,7 @@ return Backbone.LocalStorage;
 
 }(jQuery);
 
-},{}],13:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 /* ========================================================================
  * Bootstrap: alert.js v3.3.6
  * http://getbootstrap.com/javascript/#alerts
@@ -4886,7 +4975,7 @@ return Backbone.LocalStorage;
 
 }(jQuery);
 
-},{}],14:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 /* ========================================================================
  * Bootstrap: button.js v3.3.6
  * http://getbootstrap.com/javascript/#buttons
@@ -5008,7 +5097,7 @@ return Backbone.LocalStorage;
 
 }(jQuery);
 
-},{}],15:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 /* ========================================================================
  * Bootstrap: carousel.js v3.3.6
  * http://getbootstrap.com/javascript/#carousel
@@ -5247,7 +5336,7 @@ return Backbone.LocalStorage;
 
 }(jQuery);
 
-},{}],16:[function(require,module,exports){
+},{}],17:[function(require,module,exports){
 /* ========================================================================
  * Bootstrap: collapse.js v3.3.6
  * http://getbootstrap.com/javascript/#collapse
@@ -5460,7 +5549,7 @@ return Backbone.LocalStorage;
 
 }(jQuery);
 
-},{}],17:[function(require,module,exports){
+},{}],18:[function(require,module,exports){
 /* ========================================================================
  * Bootstrap: dropdown.js v3.3.6
  * http://getbootstrap.com/javascript/#dropdowns
@@ -5627,7 +5716,7 @@ return Backbone.LocalStorage;
 
 }(jQuery);
 
-},{}],18:[function(require,module,exports){
+},{}],19:[function(require,module,exports){
 /* ========================================================================
  * Bootstrap: modal.js v3.3.6
  * http://getbootstrap.com/javascript/#modals
@@ -5966,7 +6055,7 @@ return Backbone.LocalStorage;
 
 }(jQuery);
 
-},{}],19:[function(require,module,exports){
+},{}],20:[function(require,module,exports){
 /* ========================================================================
  * Bootstrap: popover.js v3.3.6
  * http://getbootstrap.com/javascript/#popovers
@@ -6076,7 +6165,7 @@ return Backbone.LocalStorage;
 
 }(jQuery);
 
-},{}],20:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 /* ========================================================================
  * Bootstrap: scrollspy.js v3.3.6
  * http://getbootstrap.com/javascript/#scrollspy
@@ -6250,7 +6339,7 @@ return Backbone.LocalStorage;
 
 }(jQuery);
 
-},{}],21:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
 /* ========================================================================
  * Bootstrap: tab.js v3.3.6
  * http://getbootstrap.com/javascript/#tabs
@@ -6407,7 +6496,7 @@ return Backbone.LocalStorage;
 
 }(jQuery);
 
-},{}],22:[function(require,module,exports){
+},{}],23:[function(require,module,exports){
 /* ========================================================================
  * Bootstrap: tooltip.js v3.3.6
  * http://getbootstrap.com/javascript/#tooltip
@@ -6923,7 +7012,7 @@ return Backbone.LocalStorage;
 
 }(jQuery);
 
-},{}],23:[function(require,module,exports){
+},{}],24:[function(require,module,exports){
 /* ========================================================================
  * Bootstrap: transition.js v3.3.6
  * http://getbootstrap.com/javascript/#transitions
@@ -9533,7 +9622,7 @@ require('../../js/popover.js')
 require('../../js/scrollspy.js')
 require('../../js/tab.js')
 require('../../js/affix.js')
-},{"../../js/affix.js":12,"../../js/alert.js":13,"../../js/button.js":14,"../../js/carousel.js":15,"../../js/collapse.js":16,"../../js/dropdown.js":17,"../../js/modal.js":18,"../../js/popover.js":19,"../../js/scrollspy.js":20,"../../js/tab.js":21,"../../js/tooltip.js":22,"../../js/transition.js":23}],"jquery":[function(require,module,exports){
+},{"../../js/affix.js":13,"../../js/alert.js":14,"../../js/button.js":15,"../../js/carousel.js":16,"../../js/collapse.js":17,"../../js/dropdown.js":18,"../../js/modal.js":19,"../../js/popover.js":20,"../../js/scrollspy.js":21,"../../js/tab.js":22,"../../js/tooltip.js":23,"../../js/transition.js":24}],"jquery":[function(require,module,exports){
 /*!
  * jQuery JavaScript Library v2.2.4
  * http://jquery.com/
