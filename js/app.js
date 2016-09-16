@@ -238,7 +238,7 @@ var selectboxView = new SelectboxView({
     _className: 'select-user',                    // selectタグのclass [デフォルト]form-control
     attrs: { name: 'selectUser' },                // selectタグの属性
     optionAttrs: { class: 'select-option' },      // optionタグの属性
-    selected: this.model.id,                      // デフォルトで選択済みにする項目のid
+    selected: this.model,                         // デフォルトで選択済みにする項目
     blank: true,                                  // 先頭に空のoptionを入れるかどうか
     blankLabel: '未選択',                         // 空のoptionのラベル
     blankValue: 'blank',                          // 空のoptionのvalue
@@ -253,7 +253,7 @@ Backbone.Marionette = require('backbone.marionette');
 var SelectboxOptionView = Backbone.Marionette.ItemView.extend({
     tagName: 'option',
     attributes: function() {
-        var selected = this.options.selected == this.model.id ? { selected: 'selected' } : {};
+        var selected = this.options.selected && this.options.selected.cid == this.model.cid ? { selected: 'selected' } : {};
         return Backbone.$.extend(this.options.attrs, selected, {
             value: this.model.get(this.options.value),
             'data-model-id': this.model.id,
@@ -682,7 +682,7 @@ module.exports = Backbone.Marionette.LayoutView.extend({
             _className: 'form-control select-user',
             attrs: { name: 'selectUser', 'data-target': '#button' },
             optionAttrs: { class: 'select-option' },
-            selected: this.collection.length == 0 ? '' : this.collection.at(this.collection.length -1).id,
+            selected: this.collection.length == 0 ? '' : this.collection.at(this.collection.length -1),
             blank: true,
             blankLabel: '未選択',
             blankValue: 'blank',

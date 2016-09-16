@@ -27,7 +27,7 @@ module.exports = Backbone.Marionette.LayoutView.extend({
             _className: 'form-control select-user',
             attrs: { name: 'selectUser', 'data-target': '#button' },
             optionAttrs: { class: 'select-option' },
-            selected: this.collection.length == 0 ? '' : this.collection.at(this.collection.length -1).id,
+            selected: this.collection.length == 0 ? '' : this.collection.at(this.collection.length -1),
             blank: true,
             blankLabel: '未選択',
             blankValue: 'blank',
