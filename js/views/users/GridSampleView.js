@@ -10,6 +10,7 @@ module.exports = Backbone.Marionette.LayoutView.extend({
         userTableRegion: '#user_table_region',
     },
     childEvents: {
+        'click:row'     : 'onClickRow',
         'click:edit'     : 'onClickEditButton',
         'click:destroy'  : 'onClickDestroyButton',
         'change:username': 'onChangeSelectUser',
@@ -39,6 +40,9 @@ module.exports = Backbone.Marionette.LayoutView.extend({
             eventNames: eventNames,
         });
         this.getRegion('userTableRegion').show(gridView);
+    },
+    onClickRow: function(view, e) {
+        if(!this.$(e.target).is(this.$('button, select'))) alert('click ' + view.model.get('name'));
     },
     onClickEditButton: function(view) {
         alert('click edit button!');
