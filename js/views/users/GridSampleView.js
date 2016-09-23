@@ -10,7 +10,8 @@ module.exports = Backbone.Marionette.LayoutView.extend({
         userTableRegion: '#user_table_region',
     },
     childEvents: {
-        'click:row'     : 'onClickRow',
+        'click:row'      : 'onClickRow',
+        'click:header'   : 'onClickHeader',
         'click:edit'     : 'onClickEditButton',
         'click:destroy'  : 'onClickDestroyButton',
         'change:username': 'onChangeSelectUser',
@@ -36,13 +37,17 @@ module.exports = Backbone.Marionette.LayoutView.extend({
             _id: 'user_table',
             _className: 'table table-bordered table-hover',
             attrs: { name: 'userTable' },
-            sort: true,
             eventNames: eventNames,
         });
         this.getRegion('userTableRegion').show(gridView);
     },
     onClickRow: function(view, e) {
         if(!this.$(e.target).is(this.$('button, select'))) alert('click ' + view.model.get('name'));
+        console.log(e);
+    },
+    onClickHeader: function(view, name, e) {
+        console.log(name);
+        console.log(e);
     },
     onClickEditButton: function(view) {
         alert('click edit button!');

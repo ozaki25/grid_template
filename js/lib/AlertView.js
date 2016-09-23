@@ -2,7 +2,7 @@ var _ = require('underscore');
 var Backbone = require('backbone');
 Backbone.Marionette = require('backbone.marionette');
 
-module.exports = Backbone.Marionette.ItemView.extend({
+module.exports = Backbone.Marionette.LayoutView.extend({
     className: function() {
         var classNames = (this.options._className || '') + ' alert alert-dismissible ';
         switch(this.options.alertType) {
@@ -37,10 +37,16 @@ module.exports = Backbone.Marionette.ItemView.extend({
     ),
     templateHelpers: function() {
         return {
-            message: this.message
+            message: typeof this.message === 'string' ? this.message : '<div id="message_region"></div>',
         }
     },
     initialize: function(options) {
-        this.message = options.message;
+        this.message = options.message || '';
+    },
+    onBeforeShow: function() {
+        if(typeof this.message === 'object') {
+            this.addRegion('messageRegion', '#message_region');
+            this.getRegion('messageRegion').show(this.message);
+        }
     },
 });
