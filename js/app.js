@@ -225,9 +225,9 @@ var GridView = Backbone.Marionette.CompositeView.extend({
         }
     },
     initialize: function(options) {
-        this.sortable = options.sort;
         this.columns = options.columns;
         this.clickRowEventName = options.clickRowEventName || 'click:row';
+        this.clickHeaderEventName = options.clickHeaderEventName || 'click:header';
         this.eventNames = options.eventNames;
     },
     ui: {
@@ -237,10 +237,7 @@ var GridView = Backbone.Marionette.CompositeView.extend({
         'click @ui.tableHeader': 'onClickTableHeader',
     },
     onClickTableHeader: function(e) {
-        if(this.sortable) {
-            this.collection.comparator = this.$(e.target).attr('name');
-            this.collection.sort();
-        }
+        this.triggerMethod(this.clickHeaderEventName, this.$(e.target).attr('name'), e);
     }
 });
 
@@ -634,7 +631,8 @@ module.exports = Backbone.Marionette.LayoutView.extend({
         userTableRegion: '#user_table_region',
     },
     childEvents: {
-        'click:row'     : 'onClickRow',
+        'click:row'      : 'onClickRow',
+        'click:header'   : 'onClickHeader',
         'click:edit'     : 'onClickEditButton',
         'click:destroy'  : 'onClickDestroyButton',
         'change:username': 'onChangeSelectUser',
@@ -660,13 +658,17 @@ module.exports = Backbone.Marionette.LayoutView.extend({
             _id: 'user_table',
             _className: 'table table-bordered table-hover',
             attrs: { name: 'userTable' },
-            sort: true,
             eventNames: eventNames,
         });
         this.getRegion('userTableRegion').show(gridView);
     },
     onClickRow: function(view, e) {
         if(!this.$(e.target).is(this.$('button, select'))) alert('click ' + view.model.get('name'));
+        console.log(e);
+    },
+    onClickHeader: function(view, name, e) {
+        console.log(name);
+        console.log(e);
     },
     onClickEditButton: function(view) {
         alert('click edit button!');
