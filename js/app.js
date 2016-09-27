@@ -829,7 +829,7 @@ var SelectboxSampleView = require('./SelectboxSampleView');
 var InputSampleView = require('./InputSampleView');
 var TextareaSampleView = require('./TextareaSampleView');
 var AlertSampleView = require('./AlertSampleView');
-var PagingSampleView = require('./PagingSampleView');
+var PagerSampleView = require('./PagerSampleView');
 
 module.exports = Backbone.Marionette.LayoutView.extend({
     className: 'container',
@@ -842,7 +842,7 @@ module.exports = Backbone.Marionette.LayoutView.extend({
         inputSampleRegion    : '#input_sample_region',
         textareaSampleRegion : '#textarea_sample_region',
         alertSampleRegion    : '#alert_sample_region',
-        pagingSampleRegion   : '#paging_sample_region',
+        pagerSampleRegion   : '#pager_sample_region',
     },
     onBeforeShow: function() {
         this.renderUserForm();
@@ -852,7 +852,7 @@ module.exports = Backbone.Marionette.LayoutView.extend({
         this.renderInputSample();
         this.renderTextareaSample();
         this.renderAlertSample();
-        this.renderPagingSample();
+        this.renderPagerSample();
     },
     renderUserForm: function() {
         this.getRegion('userFormRegion').show(new FormView({ collection: this.collection }));
@@ -875,22 +875,22 @@ module.exports = Backbone.Marionette.LayoutView.extend({
     renderAlertSample: function() {
         this.getRegion('alertSampleRegion').show(new AlertSampleView());
     },
-    renderPagingSample: function() {
-        this.getRegion('pagingSampleRegion').show(new PagingSampleView({ collection: this.collection }));
+    renderPagerSample: function() {
+        this.getRegion('pagerSampleRegion').show(new PagerSampleView({ collection: this.collection }));
     },
 });
 
-},{"./AlertSampleView":13,"./ButtonSampleView":14,"./FormView":15,"./GridSampleView":16,"./InputSampleView":17,"./PagingSampleView":19,"./SelectboxSampleView":20,"./TextareaSampleView":21,"backbone":"backbone","backbone.marionette":24}],19:[function(require,module,exports){
+},{"./AlertSampleView":13,"./ButtonSampleView":14,"./FormView":15,"./GridSampleView":16,"./InputSampleView":17,"./PagerSampleView":19,"./SelectboxSampleView":20,"./TextareaSampleView":21,"backbone":"backbone","backbone.marionette":24}],19:[function(require,module,exports){
 var Backbone = require('backbone');
 Backbone.Marionette = require('backbone.marionette');
 var GridView = require('../../lib/GridView');
-var PagingView = require('../../lib/PagingView');
+var PagerView = require('../../lib/PagerView');
 
 module.exports = Backbone.Marionette.LayoutView.extend({
-    template: '#paging_sample_view',
+    template: '#pager_sample_view',
     regions: {
         userTableRegion: '#user_table_region',
-        pagingRegion   : '#paging_region',
+        pagerRegion   : '#pager_region',
     },
     childEvents: {
         'click:changePage': 'onClickChangePage',
@@ -903,7 +903,7 @@ module.exports = Backbone.Marionette.LayoutView.extend({
     },
     onBeforeShow: function() {
         this.renderUserTable();
-        this.renderPaging();
+        this.renderPager();
     },
     renderUserTable: function() {
         var columns = [
@@ -918,9 +918,9 @@ module.exports = Backbone.Marionette.LayoutView.extend({
         });
         this.getRegion('userTableRegion').show(gridView);
     },
-    renderPaging: function() {
-        var pagingView = new PagingView({ model: this.model, showPageNumber: true, alignEachSide: false });
-        this.getRegion('pagingRegion').show(pagingView);
+    renderPager: function() {
+        var pagerView = new PagerView({ model: this.model, showPageNumber: true, alignEachSide: false });
+        this.getRegion('pagerRegion').show(pagerView);
     },
     onClickChangePage: function(view, e) {
         console.log('you click ' + e.target.className);
@@ -928,7 +928,7 @@ module.exports = Backbone.Marionette.LayoutView.extend({
     },
 });
 
-},{"../../lib/GridView":5,"../../lib/PagingView":7,"backbone":"backbone","backbone.marionette":24}],20:[function(require,module,exports){
+},{"../../lib/GridView":5,"../../lib/PagerView":7,"backbone":"backbone","backbone.marionette":24}],20:[function(require,module,exports){
 var Backbone = require('backbone');
 Backbone.Marionette = require('backbone.marionette');
 var SelectboxView = require('../../lib/SelectboxView');
