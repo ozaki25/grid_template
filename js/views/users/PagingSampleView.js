@@ -16,8 +16,6 @@ module.exports = Backbone.Marionette.LayoutView.extend({
         this.model = new Backbone.Model({
             pageNumber: 1,
             totalPage: 3,
-            hasPrev: false,
-            hasNext: true,
         });
     },
     onBeforeShow: function() {
@@ -38,10 +36,11 @@ module.exports = Backbone.Marionette.LayoutView.extend({
         this.getRegion('userTableRegion').show(gridView);
     },
     renderPaging: function() {
-        var pagingView = new PagingView({ model: this.model });
+        var pagingView = new PagingView({ model: this.model, showPageNumber: true, alignEachSide: false });
         this.getRegion('pagingRegion').show(pagingView);
     },
-    onClickChangePage: function(view) {
+    onClickChangePage: function(view, e) {
+        console.log('you click ' + e.target.className);
         console.log(JSON.stringify(view.model.attributes));
     },
 });

@@ -291,19 +291,22 @@ module.exports = Backbone.Marionette.LayoutView.extend({
     tagName: 'nav',
     template: _.template(
       '<ul class="pager">' +
-        '<li>' +
-          '<a class="prev-btn" href="#"><%= prevLavel %></a>' +
+        '<li class="<%= prevClass %>">' +
+          '<a class="prev-btn" href="#"><%= prevLabel %></a>' +
         '</li>' +
-        ' <%- pageNumber %> / <%- totalPage %> ' +
-        '<li>' +
-          '<a class="next-btn" href="#"><%=  nextLavel %></a>' +
+        '<%= pageNumber %>' +
+        '<li class="<%= nextClass %>">' +
+          '<a class="next-btn" href="#"><%=  nextLabel %></a>' +
         '</li>' +
       '</ul>'
     ),
     templateHelpers: function() {
         return {
-            prevLavel: this.prevLavel,
-            nextLavel: this.nextLavel,
+            prevClass: this.alignEachSide ? 'previous' : '',
+            nextClass: this.alignEachSide ? 'next' : '',
+            pageNumber: this.showPageNumber ? '&nbsp;' + this.model.get('pageNumber') + '&nbsp;/&nbsp;'  + this.model.get('totalPage') + '&nbsp;' : '',
+            prevLabel: this.prevLabel,
+            nextLabel: this.nextLabel,
         }
     },
     ui: {
@@ -315,32 +318,40 @@ module.exports = Backbone.Marionette.LayoutView.extend({
         'click @ui.nextBtn': 'onClickNextBtn',
     },
     modelEvents: {
-        'sync': 'render',
+        'change': 'render',
     },
     initialize: function(options) {
-        this.prevLavel = options.prevLavel || '&larr; 前のページ';
-        this.nextLavel = options.nextLavel || '次のページ &rarr;';
+        this.alignEachSide = !!options.alignEachSide;
+        this.showPageNumber = !!options.showPageNumber;
+        this.prevLabel = options.prevLabel || '前のページ';
+        this.nextLabel = options.nextLabel || '次のページ';
     },
     onRender: function() {
-        this.bothEndsCheck();
+        this.eachEndCheck();
     },
     onClickPrevBtn: function(e) {
         e.preventDefault();
-        if(this.model.get('hasPrev')) {
+        if(this.hasPrev()) {
             this.model.set({ pageNumber: this.model.get('pageNumber') - 1 });
-            this.triggerMethod('click:changePage');
+            this.triggerMethod('click:changePage', e);
         }
     },
     onClickNextBtn: function(e) {
         e.preventDefault();
-        if(this.model.get('hasNext')) {
+        if(this.hasNext()) {
             this.model.set({ pageNumber: this.model.get('pageNumber') + 1 });
-            this.triggerMethod('click:changePage');
+            this.triggerMethod('click:changePage', e);
         }
     },
-    bothEndsCheck: function() {
-        if(!this.model.get('hasPrev')) this.ui.prevBtn.parent('li').addClass('disabled');
-        if(!this.model.get('hasNext')) this.ui.nextBtn.parent('li').addClass('disabled');
+    eachEndCheck: function() {
+        if(!this.hasPrev()) this.ui.prevBtn.parent('li').addClass('disabled');
+        if(!this.hasNext()) this.ui.nextBtn.parent('li').addClass('disabled');
+    },
+    hasPrev: function() {
+        return this.model.get('pageNumber') > 1;
+    },
+    hasNext: function() {
+        return this.model.get('pageNumber') < this.model.get('totalPage');
     },
 });
 
@@ -888,8 +899,6 @@ module.exports = Backbone.Marionette.LayoutView.extend({
         this.model = new Backbone.Model({
             pageNumber: 1,
             totalPage: 3,
-            hasPrev: false,
-            hasNext: true,
         });
     },
     onBeforeShow: function() {
@@ -910,10 +919,11 @@ module.exports = Backbone.Marionette.LayoutView.extend({
         this.getRegion('userTableRegion').show(gridView);
     },
     renderPaging: function() {
-        var pagingView = new PagingView({ model: this.model });
+        var pagingView = new PagingView({ model: this.model, showPageNumber: true, alignEachSide: false });
         this.getRegion('pagingRegion').show(pagingView);
     },
-    onClickChangePage: function(view) {
+    onClickChangePage: function(view, e) {
+        console.log('you click ' + e.target.className);
         console.log(JSON.stringify(view.model.attributes));
     },
 });
