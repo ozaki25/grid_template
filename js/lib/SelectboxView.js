@@ -27,7 +27,7 @@ var SelectboxOptionView = Backbone.Marionette.ItemView.extend({
         var selected = this.options.selected && this.options.selected.cid == this.model.cid ? { selected: 'selected' } : {};
         return Backbone.$.extend(this.options.attrs, selected, {
             value: this.model.get(this.options.value),
-            'data-model-id': this.model.id,
+            'data-model-cid': this.model.cid,
         });
     },
     template: _.template('<%= label %>'),
@@ -46,7 +46,7 @@ var SelectboxView = Backbone.Marionette.CollectionView.extend({
     attributes: function() {
         return Backbone.$.extend(this.options.attrs, {
             id: this.options._id,
-            class: this.options._className || 'form-control',
+            class: this.options._className === undefined ? 'form-control' : this.options._className,
         });
     },
     childView: SelectboxOptionView,
@@ -73,9 +73,9 @@ var SelectboxView = Backbone.Marionette.CollectionView.extend({
         'change': 'onChange'
     },
     onChange: function() {
-        var id = this.$('option:selected').attr('data-model-id');
+        var cid = this.$('option:selected').attr('data-model-cid');
         var value = this.$el.val();
-        var model = this.collection.findWhere({ id: id }) || this.collection.findWhere({ id: parseInt(id) });
+        var model = _(this.collection.models).findWhere({ cid: cid });
         this.triggerMethod(this.changeEventName, value, model);
     },
     appendBlankOption: function() {

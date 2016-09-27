@@ -7,7 +7,7 @@ var ButtonView = Backbone.Marionette.ItemView.extend({
     attributes: function() {
         return Backbone.$.extend(this.options.attrs, {
             id: this.options._id,
-            class: this.options._className || 'btn btn-default',
+            class: this.options._className === undefined ? 'btn btn-default' : this.options._className,
         });
     },
     template: _.template('<%= label %>'),
