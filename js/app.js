@@ -145,7 +145,7 @@ var GridRowView = Backbone.Marionette.LayoutView.extend({
     tagName: 'tr',
     attributes: function() {
         return {
-            class: this.model.id,
+            id: this.model.id,
         }
     },
     template: _.template('<%= values %>'),
