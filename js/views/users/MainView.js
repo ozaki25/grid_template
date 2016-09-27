@@ -7,6 +7,7 @@ var SelectboxSampleView = require('./SelectboxSampleView');
 var InputSampleView = require('./InputSampleView');
 var TextareaSampleView = require('./TextareaSampleView');
 var AlertSampleView = require('./AlertSampleView');
+var PagingSampleView = require('./PagingSampleView');
 
 module.exports = Backbone.Marionette.LayoutView.extend({
     className: 'container',
@@ -19,6 +20,7 @@ module.exports = Backbone.Marionette.LayoutView.extend({
         inputSampleRegion    : '#input_sample_region',
         textareaSampleRegion : '#textarea_sample_region',
         alertSampleRegion    : '#alert_sample_region',
+        pagingSampleRegion   : '#paging_sample_region',
     },
     onBeforeShow: function() {
         this.renderUserForm();
@@ -28,6 +30,7 @@ module.exports = Backbone.Marionette.LayoutView.extend({
         this.renderInputSample();
         this.renderTextareaSample();
         this.renderAlertSample();
+        this.renderPagingSample();
     },
     renderUserForm: function() {
         this.getRegion('userFormRegion').show(new FormView({ collection: this.collection }));
@@ -49,5 +52,8 @@ module.exports = Backbone.Marionette.LayoutView.extend({
     },
     renderAlertSample: function() {
         this.getRegion('alertSampleRegion').show(new AlertSampleView());
+    },
+    renderPagingSample: function() {
+        this.getRegion('pagingSampleRegion').show(new PagingSampleView({ collection: this.collection }));
     },
 });
