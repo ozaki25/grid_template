@@ -143,6 +143,11 @@ Backbone.Marionette = require('backbone.marionette');
 
 var GridRowView = Backbone.Marionette.LayoutView.extend({
     tagName: 'tr',
+    attributes: function() {
+        return {
+            class: this.model.id,
+        }
+    },
     template: _.template('<%= values %>'),
     templateHelpers: function() {
         return {
@@ -220,7 +225,7 @@ var GridView = Backbone.Marionette.CompositeView.extend({
     templateHelpers: function() {
         return {
             tableHeader: _(this.columns).map(function(col) {
-                return '<th class="table-header" name="' + col.name + '">' + (col.label || col.name || '') + '</th>'
+                return '<th class="table-header" name="' + (col.name || '') + '">' + (col.label || col.name || '') + '</th>'
             }).join('')
         }
     },
