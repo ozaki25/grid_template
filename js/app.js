@@ -112,7 +112,7 @@ var ButtonView = Backbone.Marionette.ItemView.extend({
     attributes: function() {
         return Backbone.$.extend(this.options.attrs, {
             id: this.options._id,
-            class: this.options._className || 'btn btn-default',
+            class: this.options._className === undefined ? 'btn btn-default' : this.options._className,
         });
     },
     template: _.template('<%= label %>'),
@@ -143,11 +143,16 @@ Backbone.Marionette = require('backbone.marionette');
 
 var GridRowView = Backbone.Marionette.LayoutView.extend({
     tagName: 'tr',
-    template: _.template('<%= values %>'),
+    attributes: function() {
+        return {
+            id: this.model.cid,
+        }
+    },
+    template: _.template('<%= rowData %>'),
     templateHelpers: function() {
         return {
-            values: _(this.columns).map(function(col) {
-                var id = 'table_data_' + this.model.id + '_' + (col.view ? col.view.cid : col.name);
+            rowData: _(this.columns).map(function(col) {
+                var id = this.model.cid + '_' + (col.view ? col.view.cid : col.name);
                 var value = '';
                 if(!col.view) {
                     var nameSplit = col.name.split('.');
@@ -155,7 +160,7 @@ var GridRowView = Backbone.Marionette.LayoutView.extend({
                         return tmp ? tmp[name] : '';
                     }, this.model.get(nameSplit.shift()));
                 }
-                return '<td id="' + id + '">' + value + '</td>';
+                return '<td id="' + id + '" data-row-id="' + this.model.cid + '" data-col-id="' + (col.view ? col.view.cid : col.name) + '">' + value + '</td>';
             }.bind(this))
         }
     },
@@ -164,7 +169,7 @@ var GridRowView = Backbone.Marionette.LayoutView.extend({
     },
     initialize: function(options) {
         this.columns = options.columns;
-        _(this.columns).map(function(col) {
+        _(this.columns).each(function(col) {
             if(col.child) col.view = new col.child.view(col.child.options);
         });
         this.clickRowEventName = options.clickRowEventName;
@@ -174,8 +179,8 @@ var GridRowView = Backbone.Marionette.LayoutView.extend({
     onRender: function() {
         _(this.columns).each(function(col) {
             if(col.view) {
-                this.addRegion(this.model.id + col.view.cid, '#table_data_' + this.model.id + '_' + col.view.cid);
-                this.getRegion(this.model.id + col.view.cid).show(col.view);
+                this.addRegion(this.model.cid + col.view.cid, '#' + this.model.cid + '_' + col.view.cid);
+                this.getRegion(this.model.cid + col.view.cid).show(col.view);
             }
         }.bind(this));
     },
@@ -199,7 +204,7 @@ var GridView = Backbone.Marionette.CompositeView.extend({
     attributes: function() {
         return Backbone.$.extend(this.options.attrs, {
             id: this.options._id,
-            class: this.options._className || 'table',
+            class: this.options._className === undefined ? 'table' : this.options._className,
         });
     },
     childView: GridRowView,
@@ -220,7 +225,7 @@ var GridView = Backbone.Marionette.CompositeView.extend({
     templateHelpers: function() {
         return {
             tableHeader: _(this.columns).map(function(col) {
-                return '<th class="table-header" name="' + col.name + '">' + (col.label || col.name || '') + '</th>'
+                return '<th name="' + (col.name || '') + '">' + (col.label || col.name || '') + '</th>'
             }).join('')
         }
     },
@@ -231,7 +236,7 @@ var GridView = Backbone.Marionette.CompositeView.extend({
         this.eventNames = options.eventNames;
     },
     ui: {
-         tableHeader: 'th.table-header',
+        tableHeader: 'th',
     },
     events: {
         'click @ui.tableHeader': 'onClickTableHeader',
@@ -253,7 +258,7 @@ var InputView = Backbone.Marionette.ItemView.extend({
     attributes: function() {
         return Backbone.$.extend(this.options.attrs, {
             id: this.options._id,
-            class: this.options._className || 'form-control',
+            class: this.options._className === undefined ? 'form-control' : this.options._className,
             value: this.options._value,
             type: this.options._type || 'text',
         });
@@ -307,7 +312,7 @@ var SelectboxOptionView = Backbone.Marionette.ItemView.extend({
         var selected = this.options.selected && this.options.selected.cid == this.model.cid ? { selected: 'selected' } : {};
         return Backbone.$.extend(this.options.attrs, selected, {
             value: this.model.get(this.options.value),
-            'data-model-id': this.model.id,
+            'data-model-cid': this.model.cid,
         });
     },
     template: _.template('<%= label %>'),
@@ -326,7 +331,7 @@ var SelectboxView = Backbone.Marionette.CollectionView.extend({
     attributes: function() {
         return Backbone.$.extend(this.options.attrs, {
             id: this.options._id,
-            class: this.options._className || 'form-control',
+            class: this.options._className === undefined ? 'form-control' : this.options._className,
         });
     },
     childView: SelectboxOptionView,
@@ -353,9 +358,9 @@ var SelectboxView = Backbone.Marionette.CollectionView.extend({
         'change': 'onChange'
     },
     onChange: function() {
-        var id = this.$('option:selected').attr('data-model-id');
+        var cid = this.$('option:selected').attr('data-model-cid');
         var value = this.$el.val();
-        var model = this.collection.findWhere({ id: id }) || this.collection.findWhere({ id: parseInt(id) });
+        var model = _(this.collection.models).findWhere({ cid: cid });
         this.triggerMethod(this.changeEventName, value, model);
     },
     appendBlankOption: function() {
@@ -378,7 +383,7 @@ var TextareaView = Backbone.Marionette.ItemView.extend({
     attributes: function() {
         return Backbone.$.extend(this.options.attrs, {
             id: this.options._id,
-            class: this.options._className || 'form-control',
+            class: this.options._className === undefined ? 'form-control' : this.options._className,
         });
     },
     template: _.template('<%= value %>'),
