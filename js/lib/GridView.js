@@ -4,11 +4,15 @@ Backbone.Marionette = require('backbone.marionette');
 
 var GridRowView = Backbone.Marionette.LayoutView.extend({
     tagName: 'tr',
-
-    template: _.template('<%= values %>'),
+    attributes: function() {
+        return {
+            id: this.model.cid,
+        }
+    },
+    template: _.template('<%= rowData %>'),
     templateHelpers: function() {
         return {
-            values: _(this.columns).map(function(col) {
+            rowData: _(this.columns).map(function(col) {
                 var id = this.model.cid + '_' + (col.view ? col.view.cid : col.name);
                 var value = '';
                 if(!col.view) {
@@ -26,7 +30,7 @@ var GridRowView = Backbone.Marionette.LayoutView.extend({
     },
     initialize: function(options) {
         this.columns = options.columns;
-        _(this.columns).map(function(col) {
+        _(this.columns).each(function(col) {
             if(col.child) col.view = new col.child.view(col.child.options);
         });
         this.clickRowEventName = options.clickRowEventName;
@@ -36,7 +40,7 @@ var GridRowView = Backbone.Marionette.LayoutView.extend({
     onRender: function() {
         _(this.columns).each(function(col) {
             if(col.view) {
-                this.addRegion(this.model.cid + col.view.cid, this.model.cid + '_' + col.view.cid);
+                this.addRegion(this.model.cid + col.view.cid, '#' + this.model.cid + '_' + col.view.cid);
                 this.getRegion(this.model.cid + col.view.cid).show(col.view);
             }
         }.bind(this));
@@ -82,7 +86,7 @@ var GridView = Backbone.Marionette.CompositeView.extend({
     templateHelpers: function() {
         return {
             tableHeader: _(this.columns).map(function(col) {
-                return '<th class="table-header" name="' + (col.name || '') + '">' + (col.label || col.name || '') + '</th>'
+                return '<th name="' + (col.name || '') + '">' + (col.label || col.name || '') + '</th>'
             }).join('')
         }
     },
@@ -93,7 +97,7 @@ var GridView = Backbone.Marionette.CompositeView.extend({
         this.eventNames = options.eventNames;
     },
     ui: {
-         tableHeader: 'th.table-header',
+        tableHeader: 'th',
     },
     events: {
         'click @ui.tableHeader': 'onClickTableHeader',
