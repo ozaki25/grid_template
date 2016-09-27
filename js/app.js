@@ -160,7 +160,7 @@ var GridRowView = Backbone.Marionette.LayoutView.extend({
                         return tmp ? tmp[name] : '';
                     }, this.model.get(nameSplit.shift()));
                 }
-                return '<td id="' + id + '">' + value + '</td>';
+                return '<td id="' + id + '" data-row-id="' + this.model.cid + '" data-col-id="' + (col.view ? col.view.cid : col.name) + '">' + value + '</td>';
             }.bind(this))
         }
     },
