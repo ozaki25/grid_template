@@ -2,12 +2,14 @@ var Backbone = require('backbone');
 Backbone.Marionette = require('backbone.marionette');
 var GridView = require('../../lib/GridView');
 var PagerView = require('../../lib/PagerView');
+var PaginationView = require('../../lib/PaginationView');
 
 module.exports = Backbone.Marionette.LayoutView.extend({
-    template: '#pager_sample_view',
+    template: '#paging_sample_view',
     regions: {
         userTableRegion: '#user_table_region',
         pagerRegion   : '#pager_region',
+        paginationRegion   : '#pagination_region',
     },
     childEvents: {
         'click:changePage': 'onClickChangePage',
@@ -21,6 +23,7 @@ module.exports = Backbone.Marionette.LayoutView.extend({
     onBeforeShow: function() {
         this.renderUserTable();
         this.renderPager();
+        this.renderPagination();
     },
     renderUserTable: function() {
         var columns = [
@@ -38,6 +41,10 @@ module.exports = Backbone.Marionette.LayoutView.extend({
     renderPager: function() {
         var pagerView = new PagerView({ model: this.model, showPageNumber: true, alignEachSide: false });
         this.getRegion('pagerRegion').show(pagerView);
+    },
+    renderPagination: function() {
+        var paginationView = new PaginationView({ model: this.model });
+        this.getRegion('paginationRegion').show(paginationView);
     },
     onClickChangePage: function(view, e) {
         console.log('you click ' + e.target.className);
