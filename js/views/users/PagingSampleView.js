@@ -16,8 +16,8 @@ module.exports = Backbone.Marionette.LayoutView.extend({
     },
     initialize: function(options) {
         this.model = new Backbone.Model({
-            pageNumber: 1,
-            totalPage: 3,
+            pageNumber: 33,
+            totalPage: 100,
         });
     },
     onBeforeShow: function() {

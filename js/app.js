@@ -361,36 +361,63 @@ var _ = require('underscore');
 var Backbone = require('backbone');
 Backbone.Marionette = require('backbone.marionette');
 
-module.exports = Backbone.Marionette.LayoutView.extend({
-    tagName: 'nav',
-    template: _.template(
-        '<ul class="pagination">' +
-          '<li><a href="#">&laquo;</a></li>' +
-          '<li><a href="#">1</a></li>' +
-          '<li><a href="#">2</a></li>' +
-          '<li><a href="#">3</a></li>' +
-          '<li><a href="#">4</a></li>' +
-          '<li><a href="#">5</a></li>' +
-          '<li><a href="#">&raquo;</a></li>' +
-        '</ul>'
-    ),
-    templateHelpers: function() {
+PageNumberView = Backbone.Marionette.ItemView.extend({
+    tagName: 'li',
+    attributes: function() {
         return {
+            class: this.options.pageNumber === this.model.get('page') ? 'active' : '',
         }
     },
-    ui: {
-    },
+    template: _.template('<a href="#"><%- label %></a>'),
     events: {
+        'click': 'onClick',
+    },
+    onClick: function(e) {
+        e.preventDefault();
+        this.triggerMethod('click:page');
+    },
+});
+
+
+PaginationView = Backbone.Marionette.CompositeView.extend({
+    tagName: 'nav',
+    childView: PageNumberView,
+    childViewContainer: '#page_number_container',
+    childViewOptions: function() {
+        return {
+            pageNumber: this.model.get('pageNumber'),
+        }
+    },
+    template: _.template(
+        '<ul id="page_number_container" class="pagination"></ul>'
+    ),
+    childEvents: {
+        'click:page': 'onClickPageLink',
     },
     modelEvents: {
         'change': 'render',
     },
     initialize: function(options) {
+        this.collection = new Backbone.Collection();
     },
-    onRender: function() {
+    updatePages: function() {
+        var first = [{ page: 1, label: '«' }];
+        var prev = [{ page: this.model.get('pageNumber') - 1, label: '‹' }];
+        var next = [{ page: this.model.get('pageNumber') + 1, label: '›' }];
+        var last = [{ page: this.model.get('totalPage'), label: '»' }];
+        var pageRange = _.range(this.model.get('pageNumber') -2, this.model.get('pageNumber') + 3);
+        var pages = _(pageRange).map(function(i) { return { page: i, label: i }; });
+        this.collection = new Backbone.Collection([].concat(first, prev, pages, next, last));
+    },
+    onBeforeRender: function() {
+        this.updatePages();
+    },
+    onClickPageLink: function(view) {
+        this.model.set({ pageNumber: view.model.get('page') });
     },
 });
 
+module.exports = PaginationView;
 
 },{"backbone":"backbone","backbone.marionette":25,"underscore":"underscore"}],9:[function(require,module,exports){
 /*
@@ -935,8 +962,8 @@ module.exports = Backbone.Marionette.LayoutView.extend({
     },
     initialize: function(options) {
         this.model = new Backbone.Model({
-            pageNumber: 1,
-            totalPage: 3,
+            pageNumber: 33,
+            totalPage: 100,
         });
     },
     onBeforeShow: function() {
