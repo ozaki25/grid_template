@@ -54,6 +54,6 @@ module.exports = Backbone.Marionette.LayoutView.extend({
         this.getRegion('alertSampleRegion').show(new AlertSampleView());
     },
     renderPagingSample: function() {
-        this.getRegion('pagingSampleRegion').show(new PagingSampleView({ collection: this.collection }));
+        this.getRegion('pagingSampleRegion').show(new PagingSampleView());
     },
 });

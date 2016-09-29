@@ -363,10 +363,8 @@ Backbone.Marionette = require('backbone.marionette');
 
 PageNumberView = Backbone.Marionette.ItemView.extend({
     tagName: 'li',
-    attributes: function() {
-        return {
-            class: this.options.pageNumber === this.model.get('page') ? 'active' : '',
-        }
+    className: function() {
+        return (this.model.get('active') ? 'active ' :'' ) + (this.model.get('disabled') ? 'disabled ' :'' );
     },
     template: _.template('<a href="#"><%- label %></a>'),
     events: {
@@ -374,7 +372,7 @@ PageNumberView = Backbone.Marionette.ItemView.extend({
     },
     onClick: function(e) {
         e.preventDefault();
-        this.triggerMethod('click:page');
+        if(!this.model.get('disabled')) this.triggerMethod('click:page', e);
     },
 });
 
@@ -401,19 +399,28 @@ PaginationView = Backbone.Marionette.CompositeView.extend({
         this.collection = new Backbone.Collection();
     },
     updatePages: function() {
-        var first = [{ page: 1, label: '«' }];
-        var prev = [{ page: this.model.get('pageNumber') - 1, label: '‹' }];
-        var next = [{ page: this.model.get('pageNumber') + 1, label: '›' }];
-        var last = [{ page: this.model.get('totalPage'), label: '»' }];
+        var first = [{ page: 1, label: '«', disabled: !this.hasPrev() }];
+        var prev = [{ page: this.model.get('pageNumber') - 1, label: '‹', disabled: !this.hasPrev() }];
+        var next = [{ page: this.model.get('pageNumber') + 1, label: '›', disabled: !this.hasNext() }];
+        var last = [{ page: this.model.get('totalPage'), label: '»', disabled: !this.hasNext() }];
         var pageRange = _.range(this.model.get('pageNumber') -2, this.model.get('pageNumber') + 3);
-        var pages = _(pageRange).map(function(i) { return { page: i, label: i }; });
+        var pages = _.chain(pageRange).map(function(i) {
+            return i < 1 || i > this.model.get('totalPage') ? '' : { page: i, label: i, active: i == this.model.get('pageNumber') };
+        }.bind(this)).compact().value();
         this.collection = new Backbone.Collection([].concat(first, prev, pages, next, last));
     },
     onBeforeRender: function() {
         this.updatePages();
     },
-    onClickPageLink: function(view) {
+    onClickPageLink: function(view, e) {
         this.model.set({ pageNumber: view.model.get('page') });
+        this.triggerMethod('click:changePage', e);
+    },
+    hasPrev: function() {
+        return this.model.get('pageNumber') > 1;
+    },
+    hasNext: function() {
+        return this.model.get('pageNumber') < this.model.get('totalPage');
     },
 });
 
@@ -939,21 +946,19 @@ module.exports = Backbone.Marionette.LayoutView.extend({
         this.getRegion('alertSampleRegion').show(new AlertSampleView());
     },
     renderPagingSample: function() {
-        this.getRegion('pagingSampleRegion').show(new PagingSampleView({ collection: this.collection }));
+        this.getRegion('pagingSampleRegion').show(new PagingSampleView());
     },
 });
 
 },{"./AlertSampleView":14,"./ButtonSampleView":15,"./FormView":16,"./GridSampleView":17,"./InputSampleView":18,"./PagingSampleView":20,"./SelectboxSampleView":21,"./TextareaSampleView":22,"backbone":"backbone","backbone.marionette":25}],20:[function(require,module,exports){
 var Backbone = require('backbone');
 Backbone.Marionette = require('backbone.marionette');
-var GridView = require('../../lib/GridView');
 var PagerView = require('../../lib/PagerView');
 var PaginationView = require('../../lib/PaginationView');
 
 module.exports = Backbone.Marionette.LayoutView.extend({
     template: '#paging_sample_view',
     regions: {
-        userTableRegion: '#user_table_region',
         pagerRegion   : '#pager_region',
         paginationRegion   : '#pagination_region',
     },
@@ -967,22 +972,8 @@ module.exports = Backbone.Marionette.LayoutView.extend({
         });
     },
     onBeforeShow: function() {
-        this.renderUserTable();
         this.renderPager();
         this.renderPagination();
-    },
-    renderUserTable: function() {
-        var columns = [
-            { label: 'ID', name: 'id' },
-            { label: '名前', name: 'name' },
-            { label: '部署', name: 'dept' },
-            { label: '年齢', name: 'age' },
-        ];
-        var gridView = new GridView({
-            collection: this.collection,
-            columns: columns,
-        });
-        this.getRegion('userTableRegion').show(gridView);
     },
     renderPager: function() {
         var pagerView = new PagerView({ model: this.model, showPageNumber: true, alignEachSide: false });
@@ -998,7 +989,7 @@ module.exports = Backbone.Marionette.LayoutView.extend({
     },
 });
 
-},{"../../lib/GridView":5,"../../lib/PagerView":7,"../../lib/PaginationView":8,"backbone":"backbone","backbone.marionette":25}],21:[function(require,module,exports){
+},{"../../lib/PagerView":7,"../../lib/PaginationView":8,"backbone":"backbone","backbone.marionette":25}],21:[function(require,module,exports){
 var Backbone = require('backbone');
 Backbone.Marionette = require('backbone.marionette');
 var SelectboxView = require('../../lib/SelectboxView');
