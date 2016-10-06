@@ -7,9 +7,9 @@ var InputView = Backbone.Marionette.ItemView.extend({
     attributes: function() {
         return Backbone.$.extend(this.options.attrs, {
             id: this.options._id,
-            class: this.options._className === undefined ? 'form-control' : this.options._className,
-            value: this.options._value,
-            type: this.options._type || 'text',
+            class: typeof this.options._className == 'undefined' ? 'form-control' : this.options._className,
+            value: this.options.value,
+            type: this.options.type || 'text',
         });
     },
     template: _.template(''),

@@ -46,7 +46,7 @@ var SelectboxView = Backbone.Marionette.CollectionView.extend({
     attributes: function() {
         return Backbone.$.extend(this.options.attrs, {
             id: this.options._id,
-            class: this.options._className === undefined ? 'form-control' : this.options._className,
+            class: typeof this.options._className === 'undefined' ? 'form-control' : this.options._className,
         });
     },
     childView: SelectboxOptionView,

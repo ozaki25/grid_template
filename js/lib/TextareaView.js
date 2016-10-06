@@ -7,7 +7,7 @@ var TextareaView = Backbone.Marionette.ItemView.extend({
     attributes: function() {
         return Backbone.$.extend(this.options.attrs, {
             id: this.options._id,
-            class: this.options._className === undefined ? 'form-control' : this.options._className,
+            class: typeof this.options._className === 'undefined' ? 'form-control' : this.options._className,
         });
     },
     template: _.template('<%= value %>'),
@@ -17,7 +17,7 @@ var TextareaView = Backbone.Marionette.ItemView.extend({
         }
     },
     initialize: function(options) {
-        this.value = this.options._value;
+        this.value = this.options.vlue;
         this.changeEventName = options.changeEventName || 'change:textarea';
         this.keypressEventName = options.keypressEventName || 'keypress:textarea';
     },

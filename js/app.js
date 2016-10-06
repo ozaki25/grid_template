@@ -112,7 +112,7 @@ var ButtonView = Backbone.Marionette.ItemView.extend({
     attributes: function() {
         return Backbone.$.extend(this.options.attrs, {
             id: this.options._id,
-            class: this.options._className === undefined ? 'btn btn-default' : this.options._className,
+            class: typeof this.options._className === 'undefined' ? 'btn btn-default' : this.options._className,
         });
     },
     template: _.template('<%= label %>'),
@@ -204,7 +204,7 @@ var GridView = Backbone.Marionette.CompositeView.extend({
     attributes: function() {
         return Backbone.$.extend(this.options.attrs, {
             id: this.options._id,
-            class: this.options._className === undefined ? 'table' : this.options._className,
+            class: typeof this.options._className === 'undefined' ? 'table' : this.options._className,
         });
     },
     childView: GridRowView,
@@ -258,9 +258,9 @@ var InputView = Backbone.Marionette.ItemView.extend({
     attributes: function() {
         return Backbone.$.extend(this.options.attrs, {
             id: this.options._id,
-            class: this.options._className === undefined ? 'form-control' : this.options._className,
-            value: this.options._value,
-            type: this.options._type || 'text',
+            class: typeof this.options._className == 'undefined' ? 'form-control' : this.options._className,
+            value: this.options.value,
+            type: this.options.type || 'text',
         });
     },
     template: _.template(''),
@@ -475,7 +475,7 @@ var SelectboxView = Backbone.Marionette.CollectionView.extend({
     attributes: function() {
         return Backbone.$.extend(this.options.attrs, {
             id: this.options._id,
-            class: this.options._className === undefined ? 'form-control' : this.options._className,
+            class: typeof this.options._className === 'undefined' ? 'form-control' : this.options._className,
         });
     },
     childView: SelectboxOptionView,
@@ -527,7 +527,7 @@ var TextareaView = Backbone.Marionette.ItemView.extend({
     attributes: function() {
         return Backbone.$.extend(this.options.attrs, {
             id: this.options._id,
-            class: this.options._className === undefined ? 'form-control' : this.options._className,
+            class: typeof this.options._className === 'undefined' ? 'form-control' : this.options._className,
         });
     },
     template: _.template('<%= value %>'),
@@ -537,7 +537,7 @@ var TextareaView = Backbone.Marionette.ItemView.extend({
         }
     },
     initialize: function(options) {
-        this.value = this.options._value;
+        this.value = this.options.vlue;
         this.changeEventName = options.changeEventName || 'change:textarea';
         this.keypressEventName = options.keypressEventName || 'keypress:textarea';
     },
@@ -786,6 +786,17 @@ module.exports = Backbone.Marionette.LayoutView.extend({
         'click:destroy'  : 'onClickDestroyButton',
         'change:username': 'onChangeSelectUser',
     },
+    /*grandChildEvents: {
+        'click:edit'     : 'onClickEditButton',
+        'click:destroy'  : 'onClickDestroyButton',
+        'change:username': 'onChangeSelectUser',
+    },
+    initialize: function() {
+        this.channel = Backbone.Wreqr.radio.channel('global');
+        this.channel.vent.on('click:edit', function() { console.log(arguments); this.onClickEditButton.apply(this, arguments) }.bind(this));
+        this.channel.vent.on('click:destroy', function() { this.onClickDestroyButton.apply(this, arguments) }.bind(this));
+        this.channel.vent.on('change:username', function() { this.onChangeSelectUser.apply(this, arguments) }.bind(this));
+    },*/
     onBeforeShow: function() {
         this.renderUserTable();
     },
@@ -862,8 +873,8 @@ module.exports = Backbone.Marionette.LayoutView.extend({
         var input2View = new InputView({
             _id: 'input_email',
             _className: 'form-control email',
-            _value: 'backbone@marionette.com',
-            _type: 'email',
+            value: 'backbone@marionette.com',
+            type: 'email',
             attrs: { name: 'email' }
         });
         var button1View = new ButtonView({ label: 'submit!', clickEventName: 'click:submit1' });
@@ -1067,7 +1078,7 @@ module.exports = Backbone.Marionette.LayoutView.extend({
         var textarea2View = new TextareaView({
             _id: 'message',
             _className: 'form-control message',
-            _value: 'I like Backbone and Marionette.',
+            value: 'I like Backbone and Marionette.',
             attrs: { name: 'message', rows: 5 }
         });
         var button1View = new ButtonView({ label: 'submit!', clickEventName: 'click:submit1' });

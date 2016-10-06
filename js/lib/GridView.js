@@ -65,7 +65,7 @@ var GridView = Backbone.Marionette.CompositeView.extend({
     attributes: function() {
         return Backbone.$.extend(this.options.attrs, {
             id: this.options._id,
-            class: this.options._className === undefined ? 'table' : this.options._className,
+            class: typeof this.options._className === 'undefined' ? 'table' : this.options._className,
         });
     },
     childView: GridRowView,

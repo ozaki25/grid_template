@@ -16,6 +16,17 @@ module.exports = Backbone.Marionette.LayoutView.extend({
         'click:destroy'  : 'onClickDestroyButton',
         'change:username': 'onChangeSelectUser',
     },
+    /*grandChildEvents: {
+        'click:edit'     : 'onClickEditButton',
+        'click:destroy'  : 'onClickDestroyButton',
+        'change:username': 'onChangeSelectUser',
+    },
+    initialize: function() {
+        this.channel = Backbone.Wreqr.radio.channel('global');
+        this.channel.vent.on('click:edit', function() { console.log(arguments); this.onClickEditButton.apply(this, arguments) }.bind(this));
+        this.channel.vent.on('click:destroy', function() { this.onClickDestroyButton.apply(this, arguments) }.bind(this));
+        this.channel.vent.on('change:username', function() { this.onChangeSelectUser.apply(this, arguments) }.bind(this));
+    },*/
     onBeforeShow: function() {
         this.renderUserTable();
     },

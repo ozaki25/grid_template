@@ -26,7 +26,7 @@ module.exports = Backbone.Marionette.LayoutView.extend({
         var textarea2View = new TextareaView({
             _id: 'message',
             _className: 'form-control message',
-            _value: 'I like Backbone and Marionette.',
+            value: 'I like Backbone and Marionette.',
             attrs: { name: 'message', rows: 5 }
         });
         var button1View = new ButtonView({ label: 'submit!', clickEventName: 'click:submit1' });

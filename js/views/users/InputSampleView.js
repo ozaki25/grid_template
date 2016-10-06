@@ -26,8 +26,8 @@ module.exports = Backbone.Marionette.LayoutView.extend({
         var input2View = new InputView({
             _id: 'input_email',
             _className: 'form-control email',
-            _value: 'backbone@marionette.com',
-            _type: 'email',
+            value: 'backbone@marionette.com',
+            type: 'email',
             attrs: { name: 'email' }
         });
         var button1View = new ButtonView({ label: 'submit!', clickEventName: 'click:submit1' });
