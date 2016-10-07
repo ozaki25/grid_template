@@ -24,10 +24,10 @@ Backbone.Marionette = require('backbone.marionette');
 var SelectboxOptionView = Backbone.Marionette.ItemView.extend({
     tagName: 'option',
     attributes: function() {
-        var selected = this.options.selected && this.options.selected.cid == this.model.cid ? { selected: 'selected' } : {};
+        var selected = this.options.selected && this.options.selected.id == this.model.id ? { selected: 'selected' } : {};
         return Backbone.$.extend(this.options.attrs, selected, {
             value: this.model.get(this.options.value),
-            'data-model-cid': this.model.cid,
+            'data-model-id': this.model.id,
         });
     },
     template: _.template('<%= label %>'),
@@ -73,9 +73,9 @@ var SelectboxView = Backbone.Marionette.CollectionView.extend({
         'change': 'onChange'
     },
     onChange: function() {
-        var cid = this.$('option:selected').attr('data-model-cid');
+        var id = this.$('option:selected').attr('data-model-id');
         var value = this.$el.val();
-        var model = _(this.collection.models).findWhere({ cid: cid });
+        var model = this.collection.findWhere({ id: id });
         this.triggerMethod(this.changeEventName, value, model);
     },
     appendBlankOption: function() {

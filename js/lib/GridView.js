@@ -6,14 +6,15 @@ var GridRowView = Backbone.Marionette.LayoutView.extend({
     tagName: 'tr',
     attributes: function() {
         return {
-            id: this.model.cid,
+            id: this.model.id || this.model.cid,
         }
     },
     template: _.template('<%= rowData %>'),
     templateHelpers: function() {
         return {
             rowData: _(this.columns).map(function(col) {
-                var id = this.model.cid + '_' + (col.view ? col.view.cid : col.name);
+                var modelId = this.model.id || this.model.cid;
+                var id = modelId + '_' + (col.view ? col.view.cid : col.name);
                 var value = '';
                 if(!col.view) {
                     var nameSplit = col.name.split('.');
@@ -21,7 +22,7 @@ var GridRowView = Backbone.Marionette.LayoutView.extend({
                         return tmp ? tmp[name] : '';
                     }, this.model.get(nameSplit.shift()));
                 }
-                return '<td id="' + id + '" data-row-id="' + this.model.cid + '" data-col-id="' + (col.view ? col.view.cid : col.name) + '">' + value + '</td>';
+                return '<td id="' + id + '" data-row-id="' + modelId + '" data-col-id="' + (col.view ? col.view.cid : col.name) + '">' + value + '</td>';
             }.bind(this))
         }
     },
@@ -40,8 +41,9 @@ var GridRowView = Backbone.Marionette.LayoutView.extend({
     onRender: function() {
         _(this.columns).each(function(col) {
             if(col.view) {
-                this.addRegion(this.model.cid + col.view.cid, '#' + this.model.cid + '_' + col.view.cid);
-                this.getRegion(this.model.cid + col.view.cid).show(col.view);
+                var modelId = this.model.id || this.model.cid;
+                this.addRegion(modelId + col.view.cid, '#' + modelId + '_' + col.view.cid);
+                this.getRegion(modelId + col.view.cid).show(col.view);
             }
         }.bind(this));
     },

@@ -145,14 +145,15 @@ var GridRowView = Backbone.Marionette.LayoutView.extend({
     tagName: 'tr',
     attributes: function() {
         return {
-            id: this.model.cid,
+            id: this.model.id || this.model.cid,
         }
     },
     template: _.template('<%= rowData %>'),
     templateHelpers: function() {
         return {
             rowData: _(this.columns).map(function(col) {
-                var id = this.model.cid + '_' + (col.view ? col.view.cid : col.name);
+                var modelId = this.model.id || this.model.cid;
+                var id = modelId + '_' + (col.view ? col.view.cid : col.name);
                 var value = '';
                 if(!col.view) {
                     var nameSplit = col.name.split('.');
@@ -160,7 +161,7 @@ var GridRowView = Backbone.Marionette.LayoutView.extend({
                         return tmp ? tmp[name] : '';
                     }, this.model.get(nameSplit.shift()));
                 }
-                return '<td id="' + id + '" data-row-id="' + this.model.cid + '" data-col-id="' + (col.view ? col.view.cid : col.name) + '">' + value + '</td>';
+                return '<td id="' + id + '" data-row-id="' + modelId + '" data-col-id="' + (col.view ? col.view.cid : col.name) + '">' + value + '</td>';
             }.bind(this))
         }
     },
@@ -179,8 +180,9 @@ var GridRowView = Backbone.Marionette.LayoutView.extend({
     onRender: function() {
         _(this.columns).each(function(col) {
             if(col.view) {
-                this.addRegion(this.model.cid + col.view.cid, '#' + this.model.cid + '_' + col.view.cid);
-                this.getRegion(this.model.cid + col.view.cid).show(col.view);
+                var modelId = this.model.id || this.model.cid;
+                this.addRegion(modelId + col.view.cid, '#' + modelId + '_' + col.view.cid);
+                this.getRegion(modelId + col.view.cid).show(col.view);
             }
         }.bind(this));
     },
@@ -453,10 +455,10 @@ Backbone.Marionette = require('backbone.marionette');
 var SelectboxOptionView = Backbone.Marionette.ItemView.extend({
     tagName: 'option',
     attributes: function() {
-        var selected = this.options.selected && this.options.selected.cid == this.model.cid ? { selected: 'selected' } : {};
+        var selected = this.options.selected && this.options.selected.id == this.model.id ? { selected: 'selected' } : {};
         return Backbone.$.extend(this.options.attrs, selected, {
             value: this.model.get(this.options.value),
-            'data-model-cid': this.model.cid,
+            'data-model-id': this.model.id,
         });
     },
     template: _.template('<%= label %>'),
@@ -502,9 +504,9 @@ var SelectboxView = Backbone.Marionette.CollectionView.extend({
         'change': 'onChange'
     },
     onChange: function() {
-        var cid = this.$('option:selected').attr('data-model-cid');
+        var id = this.$('option:selected').attr('data-model-id');
         var value = this.$el.val();
-        var model = _(this.collection.models).findWhere({ cid: cid });
+        var model = this.collection.findWhere({ id: id });
         this.triggerMethod(this.changeEventName, value, model);
     },
     appendBlankOption: function() {
@@ -537,7 +539,7 @@ var TextareaView = Backbone.Marionette.ItemView.extend({
         }
     },
     initialize: function(options) {
-        this.value = this.options.vlue;
+        this.value = this.options.value;
         this.changeEventName = options.changeEventName || 'change:textarea';
         this.keypressEventName = options.keypressEventName || 'keypress:textarea';
     },
