@@ -17,7 +17,7 @@ var TextareaView = Backbone.Marionette.ItemView.extend({
         }
     },
     initialize: function(options) {
-        this.value = this.options.vlue;
+        this.value = this.options.value;
         this.changeEventName = options.changeEventName || 'change:textarea';
         this.keypressEventName = options.keypressEventName || 'keypress:textarea';
     },
