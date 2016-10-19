@@ -22,7 +22,7 @@ module.exports = Backbone.Marionette.LayoutView.extend({
         alertSampleRegion    : '#alert_sample_region',
         pagingSampleRegion   : '#paging_sample_region',
     },
-    onBeforeShow: function() {
+    onRender: function() {
         this.renderUserForm();
         this.renderGridSample();
         this.renderButtonSample();

@@ -18,7 +18,7 @@ module.exports = Backbone.Marionette.LayoutView.extend({
         'click:submit1' : 'onClickSubmit1Button',
         'click:submit2' : 'onClickSubmit2Button',
     },
-    onBeforeShow: function() {
+    onRender: function() {
         this.renderInput();
     },
     renderInput: function() {

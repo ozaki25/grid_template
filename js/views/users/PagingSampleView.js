@@ -18,7 +18,7 @@ module.exports = Backbone.Marionette.LayoutView.extend({
             totalPage: 100,
         });
     },
-    onBeforeShow: function() {
+    onRender: function() {
         this.renderPager();
         this.renderPagination();
     },

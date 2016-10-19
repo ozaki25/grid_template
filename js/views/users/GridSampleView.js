@@ -27,7 +27,7 @@ module.exports = Backbone.Marionette.LayoutView.extend({
         this.channel.vent.on('click:destroy', function() { this.onClickDestroyButton.apply(this, arguments) }.bind(this));
         this.channel.vent.on('change:username', function() { this.onChangeSelectUser.apply(this, arguments) }.bind(this));
     },*/
-    onBeforeShow: function() {
+    onRender: function() {
         this.renderUserTable();
     },
     renderUserTable: function() {

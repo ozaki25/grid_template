@@ -13,7 +13,7 @@ module.exports = Backbone.Marionette.LayoutView.extend({
         'change:selectbox': 'onChangeSelectbox',
         'change:username' : 'onChangeSelectUser',
     },
-    onBeforeShow: function() {
+    onRender: function() {
         this.renderSelectbox();
     },
     renderSelectbox: function() {

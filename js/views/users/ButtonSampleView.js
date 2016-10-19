@@ -13,7 +13,7 @@ module.exports = Backbone.Marionette.LayoutView.extend({
         'click:button': 'onClickButton',
         'click:edit': 'onClickEditButton',
     },
-    onBeforeShow: function() {
+    onRender: function() {
         this.renderButton();
     },
     renderButton: function() {

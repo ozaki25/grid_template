@@ -94,7 +94,7 @@ module.exports = Backbone.Marionette.LayoutView.extend({
     initialize: function(options) {
         this.message = options.message || '';
     },
-    onBeforeShow: function() {
+    onRender: function() {
         if(typeof this.message === 'object') {
             this.addRegion('messageRegion', '#message_region');
             this.getRegion('messageRegion').show(this.message);
@@ -610,7 +610,7 @@ module.exports = Backbone.Marionette.LayoutView.extend({
     childEvents: {
         'click:button': 'onClickButton',
     },
-    onBeforeShow: function() {
+    onRender: function() {
         this.renderButton();
     },
     renderButton: function() {
@@ -644,7 +644,7 @@ module.exports = Backbone.Marionette.LayoutView.extend({
         'click:error': 'onClickError',
         'click:button': 'onClickButton',
     },
-    onBeforeShow: function() {
+    onRender: function() {
         this.renderButton();
     },
     renderButton: function() {
@@ -694,7 +694,7 @@ module.exports = Backbone.Marionette.LayoutView.extend({
         'click:button': 'onClickButton',
         'click:edit': 'onClickEditButton',
     },
-    onBeforeShow: function() {
+    onRender: function() {
         this.renderButton();
     },
     renderButton: function() {
@@ -799,7 +799,7 @@ module.exports = Backbone.Marionette.LayoutView.extend({
         this.channel.vent.on('click:destroy', function() { this.onClickDestroyButton.apply(this, arguments) }.bind(this));
         this.channel.vent.on('change:username', function() { this.onChangeSelectUser.apply(this, arguments) }.bind(this));
     },*/
-    onBeforeShow: function() {
+    onRender: function() {
         this.renderUserTable();
     },
     renderUserTable: function() {
@@ -867,7 +867,7 @@ module.exports = Backbone.Marionette.LayoutView.extend({
         'click:submit1' : 'onClickSubmit1Button',
         'click:submit2' : 'onClickSubmit2Button',
     },
-    onBeforeShow: function() {
+    onRender: function() {
         this.renderInput();
     },
     renderInput: function() {
@@ -927,7 +927,7 @@ module.exports = Backbone.Marionette.LayoutView.extend({
         alertSampleRegion    : '#alert_sample_region',
         pagingSampleRegion   : '#paging_sample_region',
     },
-    onBeforeShow: function() {
+    onRender: function() {
         this.renderUserForm();
         this.renderGridSample();
         this.renderButtonSample();
@@ -984,7 +984,7 @@ module.exports = Backbone.Marionette.LayoutView.extend({
             totalPage: 100,
         });
     },
-    onBeforeShow: function() {
+    onRender: function() {
         this.renderPager();
         this.renderPagination();
     },
@@ -1018,7 +1018,7 @@ module.exports = Backbone.Marionette.LayoutView.extend({
         'change:selectbox': 'onChangeSelectbox',
         'change:username' : 'onChangeSelectUser',
     },
-    onBeforeShow: function() {
+    onRender: function() {
         this.renderSelectbox();
     },
     renderSelectbox: function() {
@@ -1072,7 +1072,7 @@ module.exports = Backbone.Marionette.LayoutView.extend({
         'click:submit1'    : 'onClickSubmit1Button',
         'click:submit2'    : 'onClickSubmit2Button',
     },
-    onBeforeShow: function() {
+    onRender: function() {
         this.renderTextarea();
     },
     renderTextarea: function() {
