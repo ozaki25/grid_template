@@ -75,7 +75,7 @@ var SelectboxView = Backbone.Marionette.CollectionView.extend({
     onChange: function() {
         var id = this.$('option:selected').attr('data-model-id');
         var value = this.$el.val();
-        var model = this.collection.findWhere({ id: id });
+        var model = this.collection.findWhere({ id: id }) || this.collection.findWhere({ id: parseInt(id) });
         this.triggerMethod(this.changeEventName, value, model);
     },
     appendBlankOption: function() {
