@@ -13,11 +13,12 @@
     "backbone.marionette": "^2.4.5",
     "backbone.validation": "^0.7.1",
     "bootstrap": "^3.3.6",
-    "browserify": "^13.1.1",
+    "browserify": "^13.0.0",
     "browserify-shim": "^3.8.12",
     "gulp": "^3.9.1",
     "jquery": "^2.2.1",
     "react": "^15.3.2",
+    "react-dom": "^15.3.2",
     "run-sequence": "^1.1.5",
     "underscore": "^1.8.3",
     "vinyl-source-stream": "^1.1.0"
