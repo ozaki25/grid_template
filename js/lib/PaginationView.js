@@ -2,7 +2,7 @@ var _ = require('underscore');
 var Backbone = require('backbone');
 Backbone.Marionette = require('backbone.marionette');
 
-PageNumberView = Backbone.Marionette.ItemView.extend({
+var PageNumberView = Backbone.Marionette.ItemView.extend({
     tagName: 'li',
     className: function() {
         return (this.model.get('active') ? 'active ' :'' ) + (this.model.get('disabled') ? 'disabled ' :'' );
@@ -18,7 +18,7 @@ PageNumberView = Backbone.Marionette.ItemView.extend({
 });
 
 
-PaginationView = Backbone.Marionette.CompositeView.extend({
+var PaginationView = Backbone.Marionette.CompositeView.extend({
     tagName: 'nav',
     childView: PageNumberView,
     childViewContainer: '#page_number_container',
