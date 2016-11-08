@@ -9,6 +9,10 @@ var TextareaSampleView = require('./TextareaSampleView');
 var AlertSampleView = require('./AlertSampleView');
 var PagingSampleView = require('./PagingSampleView');
 
+var React = require('react');
+var ReactDOM = require('react-dom');
+var ReactSample = require('../../components/ReactSample');
+
 module.exports = Backbone.Marionette.LayoutView.extend({
     className: 'container',
     template: '#user_main_view',
@@ -31,6 +35,9 @@ module.exports = Backbone.Marionette.LayoutView.extend({
         this.renderTextareaSample();
         this.renderAlertSample();
         this.renderPagingSample();
+    },
+    onShow: function() {
+        ReactDOM.render(<ReactSample />, document.getElementById('react'));
     },
     renderUserForm: function() {
         this.getRegion('userFormRegion').show(new FormView({ collection: this.collection }));
