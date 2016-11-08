@@ -4,6 +4,7 @@ let gulp = require('gulp');
 let runSequence = require('run-sequence');
 let browserify = require('browserify');
 let source = require('vinyl-source-stream');
+let babelify = require("babelify");
 
 // default
 gulp.task('default', ['build']);
@@ -17,8 +18,8 @@ gulp.task('build', () => {
 gulp.task('browserify', () => {
     browserify({
         entries: ['./js/index.js'],
-        require: ['jquery', 'underscore','backbone', 'bootstrap', 'backbone.validation']
     })
+    .transform(babelify, { presets: ["es2015", "react"] })
     .bundle()
     .pipe(source('app.js'))
     .pipe(gulp.dest('./js/'));

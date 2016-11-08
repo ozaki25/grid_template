@@ -5,17 +5,33 @@
   "main": "gulpfile.js",
   "dependencies": {},
   "devDependencies": {
-    "jquery": "^2.2.1",
-    "underscore": "^1.8.3",
-    "bootstrap": "^3.3.6",
+    "babel-preset-es2015": "^6.18.0",
+    "babel-preset-react": "^6.16.0",
+    "babelify": "^7.3.0",
     "backbone": "^1.3.3",
     "backbone.localstorage": "^1.1.16",
     "backbone.marionette": "^2.4.5",
     "backbone.validation": "^0.7.1",
+    "bootstrap": "^3.3.6",
+    "browserify": "^13.1.1",
+    "browserify-shim": "^3.8.12",
     "gulp": "^3.9.1",
-    "browserify": "^13.0.0",
+    "jquery": "^2.2.1",
+    "react": "^15.3.2",
     "run-sequence": "^1.1.5",
+    "underscore": "^1.8.3",
     "vinyl-source-stream": "^1.1.0"
+  },
+  "browser": {
+    "jquery": "./node_modules/jquery/dist/jquery.js"
+  },
+  "browserify": {
+    "transform": [
+      "browserify-shim"
+    ]
+  },
+  "browserify-shim": {
+    "jquery": "$"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
