@@ -1,4 +1,4 @@
-jQuery = require('jquery');
+require('jquery');
 require('bootstrap');
 var Backbone = require('backbone');
 Backbone.Marionette = require('backbone.marionette');

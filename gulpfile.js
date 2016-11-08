@@ -17,7 +17,6 @@ gulp.task('build', () => {
 gulp.task('browserify', () => {
     browserify({
         entries: ['./js/index.js'],
-        require: ['jquery', 'underscore','backbone', 'bootstrap', 'backbone.validation']
     })
     .bundle()
     .pipe(source('app.js'))
