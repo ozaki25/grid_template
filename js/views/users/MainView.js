@@ -38,10 +38,7 @@ module.exports = Backbone.Marionette.LayoutView.extend({
         this.renderPagingSample();
     },
     onShow: function() {
-        var view;
-        //view = <ReactSample />
-        view = <ReactGrid collection={ this.collection.toJSON() } />
-        ReactDOM.render(view, document.getElementById('react'));
+        this.renderReactGrid();
     },
     renderUserForm: function() {
         this.getRegion('userFormRegion').show(new FormView({ collection: this.collection }));
@@ -66,5 +63,16 @@ module.exports = Backbone.Marionette.LayoutView.extend({
     },
     renderPagingSample: function() {
         this.getRegion('pagingSampleRegion').show(new PagingSampleView());
+    },
+    renderReactGrid: function() {
+        var columns = [
+            { label: 'ID', name: 'id' },
+            { label: '部署', name: 'dept' },
+            { label: '名前', name: 'name' },
+            { label: 'チーム名', name: 'team.name' },
+            { label: 'チームの仕事内容', name: 'team.job.main' },
+        ]
+        var view = <ReactGrid collection={ this.collection.toJSON() } columns={ columns } />
+        ReactDOM.render(view, document.getElementById('react_grid_region'));
     },
 });

@@ -1,25 +1,18 @@
 import React from 'react'
 import _ from 'underscore'
 import ReactGridRow from './ReactGridRow'
+import ReactGridHeader from './ReactGridHeader'
 
 class ReactGrid extends React.Component {
     render() {
         const collection = this.props.collection
+        const columns = this.props.columns
+        const headerList = _.pluck(columns, 'label')
         return (
             <table className="table">
-                <thead>
-                    <tr>
-                        <th>1</th>
-                        <th>2</th>
-                        <th>3</th>
-                        <th>4</th>
-                        <th>5</th>
-                    </tr>
-                </thead>
+                <ReactGridHeader headerList={ headerList }/>
                 <tbody>
-                    { _.map(collection, function(row, i) {
-                        return <ReactGridRow key={ i } row={ row } />
-                    })}
+                    { _.map(collection, (row, i) => <ReactGridRow key={ i } row={ row } columns={ columns } />) }
                 </tbody>
             </table>
         )

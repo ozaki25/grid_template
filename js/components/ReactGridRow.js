@@ -4,12 +4,12 @@ import _ from 'underscore'
 class ReactGridRow extends React.Component {
     render() {
         const row = this.props.row
-        const values = _.values(row)
+        const columns = this.props.columns
         return (
             <tr>
-                { _.map(values, function(value, i) {
-                    const attr = typeof value === 'object' ? '---' : value
-                    return <td key={ i }>{ attr }</td>
+                { _.map(columns, (col, i) => {
+                    const value = _.reduce(col.name.split('.'), (tmp, name) => tmp ? tmp[name] : '', row)
+                    return <td key={ i }>{ value }</td>
                 })}
             </tr>
         )
