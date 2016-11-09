@@ -12,6 +12,7 @@ var PagingSampleView = require('./PagingSampleView');
 var React = require('react');
 var ReactDOM = require('react-dom');
 var ReactSample = require('../../components/ReactSample');
+var ReactGrid = require('../../components/ReactGrid');
 
 module.exports = Backbone.Marionette.LayoutView.extend({
     className: 'container',
@@ -37,7 +38,10 @@ module.exports = Backbone.Marionette.LayoutView.extend({
         this.renderPagingSample();
     },
     onShow: function() {
-        ReactDOM.render(<ReactSample />, document.getElementById('react'));
+        var view;
+        //view = <ReactSample />
+        view = <ReactGrid collection={ this.collection.toJSON() } />
+        ReactDOM.render(view, document.getElementById('react'));
     },
     renderUserForm: function() {
         this.getRegion('userFormRegion').show(new FormView({ collection: this.collection }));
